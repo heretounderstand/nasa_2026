@@ -1,0 +1,12 @@
+[project]
+name = "flame-in-freefall"
+version = "0.1.0"
+description = "Moteur de confiance et pipeline de données — NASA Space Apps 2026"
+requires-python = ">=3.11"
+dependencies = ["pandas", "numpy", "scikit-learn", "pydantic>=2"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

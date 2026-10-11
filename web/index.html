@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flame in Freefall</title>
+<meta name="description" content="Ce que disent les données NASA de combustion en microgravité, avec quel niveau de confiance, et quelle expérience manque.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#carte">FLAME IN FREEFALL</a>
+    <nav aria-label="Vues" class="views" id="nav"></nav>
+  </div>
+  <div class="wrap ask-row">
+    <form class="ask" id="ask" role="search">
+      <label for="q">POSER UNE QUESTION</label>
+      <div class="ask-box">
+        <input id="q" type="text" autocomplete="off" placeholder="Ce tissu peut-il servir dans un habitat lunaire ?">
+        <button type="submit">Analyser</button>
+      </div>
+      <span class="ask-note" id="ask-note">La question est traduite en scénario : l'outil ne répond jamais lui-même.</span>
+    </form>
+  </div>
+</header>
+<main id="main" class="wrap" tabindex="-1"></main>
+<footer class="wrap foot">
+  <p id="disclaimer"></p>
+  <p>Données : NASA Physical Sciences Informatics (psi.nasa.gov) et rapports NTRS. Chaque valeur renvoie à son fichier, sa ligne ou sa page. <a href="#sources">Sources</a></p>
+</footer>
+<script src="data/dashboard.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

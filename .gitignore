@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# Données PSI brutes : téléchargées manuellement, non versionnées
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/manifest.csv
+data/processed/*
+!data/processed/.gitkeep
+# Secrets (clé Gemini) et dépendances Node
+.env
+.env*.local
+node_modules/
+.next/
