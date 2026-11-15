@@ -67,6 +67,5 @@ BASS (PSI-26) test-log observations are quoted verbatim and never classified. Th
 | `engine/catalog.py` | Use of each investigation, real incidents, spinoffs, official resources |
 | `engine/pipeline.py` | Runs everything, writes `answers.json` and `dashboard.json` |
 | `dashboard/` | Next.js app; `app/api/` holds the two Gemini routes with guardrails |
-| `web/` | First static prototype (French, frozen on 9 October data) |
 
 An exploration and teaching tool, not a flight-decision tool.
