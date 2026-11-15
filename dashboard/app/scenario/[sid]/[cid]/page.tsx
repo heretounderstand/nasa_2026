@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Lumens from "@/components/Lumens";
-import { ContextStrip, Explanation, Flame, type StripItem } from "@/components/ScenarioParts";
+import { ContextStrip, Explanation, Flame, ScenarioTabs, type StripItem } from "@/components/ScenarioParts";
 import { answerFor, CONTEXT_ORDER, confidenceLevel, contextById, D, scenarioById, sourceById } from "@/lib/data";
 import { answerFacts, confidenceFacts, fmtVal } from "@/lib/explain";
 import { CONF_WORD, GRAV_STATUS, num, pad2, pct, PLATFORM_WORD, RISK_WORD } from "@/lib/labels";
@@ -51,49 +51,39 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
     };
   });
 
+  const shownEvidence = a ? a.evidence.slice(0, 3) : [];
+  const moreEvidence = a ? a.evidence.slice(3) : [];
+
   return (
     <>
-      <nav className="tabs" aria-label="Scenarios">
-        {D.scenarios.map((s) => (
-          <Link key={s.scenario_id} href={`/scenario/${s.scenario_id}/${cid}`} aria-current={s.scenario_id === sid ? "true" : undefined} scroll={false}>
-            {s.title}
-          </Link>
-        ))}
-      </nav>
+      <ScenarioTabs current={sid} cid={cid} items={D.scenarios.map((x) => ({ id: x.scenario_id, title: x.title }))} />
 
-      <div className="stack" style={{ gap: 14 }}>
+      <div className="stack" style={{ gap: 12 }}>
         <div className="eyebrow">
           Scenario {sid.toUpperCase()} · {RISK_WORD[sc.risk_level]} risk
         </div>
-        <h1 className="hero">{sc.question}</h1>
-        <div className="chips">
-          <span>g = {c.gravity_g === 0 ? "≈ 0 (microgravity)" : num(c.gravity_g)}</span>
-          <span>O₂ = {pct(c.o2_mole_fraction)}</span>
-          <span>P = {c.pressure_kpa == null ? "[to be defined]" : `${num(c.pressure_kpa, 1)} kPa`}</span>
-          {sc.assumptions.map((h) => (
-            <span key={h} className="assume" title="A scenario assumption, not a data point">
-              assumption: {h}
-            </span>
-          ))}
-        </div>
+        <h1 className="hero question">{sc.question}</h1>
       </div>
 
-      <section aria-label="Mission context" className="stack" style={{ gap: 12 }}>
-        <div className="eyebrow">Move the scenario · watch confidence fall</div>
+      <section aria-label="Mission context" className="stack" style={{ gap: 10 }}>
+        <div className="eyebrow">Move the scenario and watch confidence change</div>
         <ContextStrip sid={sid} current={cid} items={strip} />
       </section>
 
-      <div className="row" style={{ alignItems: "stretch" }}>
-        <section className="grow stack" aria-label="Answer" style={{ gap: 24 }}>
-          {ref || !a ? (
+      {/* The essentials: confidence, answer, flame. */}
+      <section className="answer-card" aria-label="Answer">
+        <div className="stack" style={{ gap: 20, minWidth: 0 }}>
+          <div className="level">
+            <Lumens level={a ? confidenceLevel(a.confidence) : 4} variant="big" />
+            <div className="stack" style={{ gap: 4 }}>
+              <span className="eyebrow">{a ? "Confidence" : "Certification framework"}</span>
+              <span className="level-word">{a ? CONF_WORD[a.confidence] : "Reference"}</span>
+            </div>
+          </div>
+          {a ? (
+            <Explanation sid={sid} cid={cid} facts={answerFacts(sc, a, ctx)} />
+          ) : (
             <>
-              <div className="level">
-                <Lumens level={4} variant="big" />
-                <div className="stack" style={{ gap: 4 }}>
-                  <span className="eyebrow">Certification framework</span>
-                  <span className="level-word">Reference</span>
-                </div>
-              </div>
               <p className="answer">
                 This is where materials are certified: NASA-STD-6001, Test 1, at 1 g. The material is exposed to a flame; it fails if
                 the flame travels more than 15 cm or drops burning debris.
@@ -103,64 +93,24 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
                 tests at 1 g (Saffire-II and LUCI ground tests, and the 1 g references in the papers), the baseline for the shifts measured elsewhere.
               </p>
             </>
-          ) : (
-            <>
-              <div className="level">
-                <Lumens level={confidenceLevel(a.confidence)} variant="big" />
-                <div className="stack" style={{ gap: 4 }}>
-                  <span className="eyebrow">Confidence</span>
-                  <span className="level-word">{CONF_WORD[a.confidence]}</span>
-                </div>
-              </div>
-              <Explanation sid={sid} cid={cid} facts={answerFacts(sc, a, ctx)} />
-              <p className="why">{confidenceFacts(a).join(" ")}</p>
-              {a.model.name && a.model.cv_score != null && (
-                <div className="model-card" aria-label="Model and baseline score">
-                  <div>
-                    <span className="eyebrow">Model</span>
-                    <span>{a.model.name}</span>
-                  </div>
-                  <div>
-                    <span className="eyebrow">Score (grouped CV)</span>
-                    <b>{num(a.model.cv_score, 3)}</b>
-                  </div>
-                  <div>
-                    <span className="eyebrow">Baseline</span>
-                    <b className="muted">{num(a.model.baseline_score, 3)}</b>
-                  </div>
-                  <div>
-                    <span className="eyebrow">Prediction</span>
-                    <span>{a.model.shown ? "shown" : "hidden"}</span>
-                  </div>
-                </div>
-              )}
-              {a.observations.comparison && <Comparison a={a} qt={sc.question_type} highlight={sc.scenario_id === "s5" ? "kapton" : "CO2 30% or more"} />}
-              <Decomposition a={a} />
-            </>
           )}
-        </section>
+          <div className="chips">
+            <span>g = {c.gravity_g === 0 ? "≈ 0 (microgravity)" : num(c.gravity_g)}</span>
+            <span>O₂ = {pct(c.o2_mole_fraction)}</span>
+            <span>P = {c.pressure_kpa == null ? "[to be defined]" : `${num(c.pressure_kpa, 1)} kPa`}</span>
+          </div>
+          {sc.assumptions.length > 0 && (
+            <p className="small muted" style={{ margin: 0 }}>
+              <span className="mono" style={{ fontSize: 11, letterSpacing: "0.06em" }}>SCENARIO ASSUMPTIONS, NOT DATA · </span>
+              {sc.assumptions.join(" ")}
+            </p>
+          )}
+        </div>
         <Flame ctx={cid} caption={CAPTION[cid]} />
-      </div>
+      </section>
 
       {a && (
         <div className="row">
-          <section className="grow stack" aria-label="Evidence">
-            <div className="eyebrow" style={{ paddingBottom: 10 }}>
-              Evidence, by relevance
-            </div>
-            {a.evidence.length === 0 && <p className="muted">No neighbouring experiment.</p>}
-            {a.evidence.map((ev) => (
-              <EvidenceItem key={ev.experiment_id} id={ev.experiment_id} src={ev.source_id} rank={ev.relevance_rank} />
-            ))}
-            {a.observations.n > a.evidence.length && (
-              <p className="small muted">
-                {a.observations.n} neighbouring experiments in total; the first {a.evidence.length} are listed.
-              </p>
-            )}
-            <Link className="mono small" style={{ marginTop: 8, padding: "10px 0" }} href="/sources">
-              ALL SOURCES →
-            </Link>
-          </section>
           <section className="side missing" aria-label="What is missing">
             <span className="eyebrow" style={{ color: "var(--fire)" }}>
               What is missing
@@ -174,7 +124,63 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
               See the priorities →
             </Link>
           </section>
+          <div className="grow stack" style={{ gap: 20 }}>
+            {a.observations.comparison && (
+              <Comparison a={a} qt={sc.question_type} highlight={sc.scenario_id === "s5" ? "kapton" : "CO2 30% or more"} />
+            )}
+            <details className="fold">
+              <summary>How this confidence was computed</summary>
+              <div className="stack" style={{ gap: 20, paddingTop: 16 }}>
+                <p className="why">{confidenceFacts(a).join(" ")}</p>
+                {a.model.name && a.model.cv_score != null && (
+                  <div className="model-card" aria-label="Model and baseline score">
+                    <div>
+                      <span className="eyebrow">Model</span>
+                      <span>{a.model.name}</span>
+                    </div>
+                    <div>
+                      <span className="eyebrow">Score (grouped CV)</span>
+                      <b>{num(a.model.cv_score, 3)}</b>
+                    </div>
+                    <div>
+                      <span className="eyebrow">Baseline</span>
+                      <b className="muted">{num(a.model.baseline_score, 3)}</b>
+                    </div>
+                    <div>
+                      <span className="eyebrow">Prediction</span>
+                      <span>{a.model.shown ? "shown" : "hidden"}</span>
+                    </div>
+                  </div>
+                )}
+                <Decomposition a={a} />
+              </div>
+            </details>
+          </div>
         </div>
+      )}
+
+      {a && (
+        <section className="stack" aria-label="Evidence">
+          <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingBottom: 8 }}>
+            <h2 className="section">Evidence</h2>
+            <span className="small muted">
+              The experiments closest to this case, most relevant first. {a.observations.n} in total.{" "}
+              <Link href="/sources">All sources</Link>
+            </span>
+          </div>
+          {a.evidence.length === 0 && <p className="muted">No neighbouring experiment.</p>}
+          {shownEvidence.map((ev) => (
+            <EvidenceItem key={ev.experiment_id} id={ev.experiment_id} src={ev.source_id} rank={ev.relevance_rank} />
+          ))}
+          {moreEvidence.length > 0 && (
+            <details className="fold">
+              <summary>Show {moreEvidence.length} more</summary>
+              {moreEvidence.map((ev) => (
+                <EvidenceItem key={ev.experiment_id} id={ev.experiment_id} src={ev.source_id} rank={ev.relevance_rank} />
+              ))}
+            </details>
+          )}
+        </section>
       )}
       <Incidents sid={sid} />
       {a && D.field_notes[sid] && <FieldNotesBlock sid={sid} />}
@@ -245,18 +251,32 @@ function FieldNotesBlock({ sid }: { sid: string }) {
           Showing {fn.items.length} of {fn.total}, in file order. Not classified, not used in the confidence score.
         </span>
       </div>
-      {fn.items.map((n) => (
-        <figure className="note" key={n.experiment_id}>
-          <blockquote>{n.text}</blockquote>
-          <figcaption className="m">
-            {[n.material, "ISS", n.o2_mole_fraction != null ? `O₂ ${pct(n.o2_mole_fraction)}` : null, n.pressure_kpa != null ? `${num(n.pressure_kpa, 1)} kPa` : null]
-              .filter(Boolean)
-              .join(" · ")}{" "}
-            · {n.provenance}
-          </figcaption>
-        </figure>
+      {fn.items.slice(0, 2).map((n) => (
+        <FieldNote key={n.experiment_id} n={n} />
       ))}
+      {fn.items.length > 2 && (
+        <details className="fold">
+          <summary>Show {fn.items.length - 2} more</summary>
+          {fn.items.slice(2).map((n) => (
+            <FieldNote key={n.experiment_id} n={n} />
+          ))}
+        </details>
+      )}
     </section>
+  );
+}
+
+function FieldNote({ n }: { n: (typeof D.field_notes)[string]["items"][number] }) {
+  return (
+    <figure className="note">
+      <blockquote>{n.text}</blockquote>
+      <figcaption className="m">
+        {[n.material, "ISS", n.o2_mole_fraction != null ? `O₂ ${pct(n.o2_mole_fraction)}` : null, n.pressure_kpa != null ? `${num(n.pressure_kpa, 1)} kPa` : null]
+          .filter(Boolean)
+          .join(" · ")}{" "}
+        · {n.provenance}
+      </figcaption>
+    </figure>
   );
 }
 

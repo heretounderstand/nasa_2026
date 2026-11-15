@@ -74,13 +74,19 @@ export default function InvestigationExplorer({
             </div>
           </div>
         </div>
-        <p className="small muted" style={{ margin: 0, maxWidth: 980 }}>
+        <p className="small muted" style={{ margin: 0 }}>
           {h.label}: {h.gravity_g === 0 ? "microgravity" : `${(h.gravity_g ?? 0).toFixed(2)} g`},{" "}
-          {h.o2_percent == null ? "atmosphere not defined" : `${fmt(h.o2_percent)}% oxygen, ${fmt(h.pressure_kpa ?? 0)} kPa`}. Relevance score, 0 to
+          {h.o2_percent == null ? "atmosphere not defined" : `${fmt(h.o2_percent)}% oxygen, ${fmt(h.pressure_kpa ?? 0)} kPa`}.
+        </p>
+        <details className="fold slim" style={{ maxWidth: 980 }}>
+          <summary>How the relevance score works</summary>
+          <p className="small muted" style={{ margin: 0 }}>
+            Relevance score, 0 to
           6: link to fire safety in the challenge statement (0–2), whether the tests cover this oxygen level (0–2), gravity (1 in microgravity;
           in partial gravity only an investigation that mimics it scores), and whether the tool holds usable outcomes (0–1). PSI holds no
           partial-gravity combustion data, so every investigation loses the gravity point for the Moon and Mars except the one that mimics it.
-        </p>
+                  </p>
+        </details>
       </section>
 
       <section aria-label="PSI combustion investigations" className="inv-grid">
@@ -113,6 +119,13 @@ export default function InvestigationExplorer({
                 <Score n={r.gravity} max={1} label="gravity" />
                 <Score n={r.usable} max={1} label="outcomes" />
               </div>
+              {p.statement_note && <p className="small inv-note">{p.statement_note}</p>}
+              <p className="small" style={{ margin: 0 }}>
+                <span className="muted">In this tool: </span>
+                {i.note}
+              </p>
+              <details className="fold slim">
+                <summary>Objective, fuels and test conditions</summary>
               {i.objective && <p className="inv-obj">{i.objective}</p>}
               <dl className="inv-facts">
                 {p.pillar && (
@@ -176,16 +189,12 @@ export default function InvestigationExplorer({
                   </>
                 )}
               </dl>
-              {p.statement_note && <p className="small inv-note">{p.statement_note}</p>}
-              <p className="small" style={{ margin: 0 }}>
-                <span className="muted">In this tool: </span>
-                {i.note}
-              </p>
               {p.quality.map((q) => (
                 <p key={q} className="small inv-warn">
                   Data caveat: {q}
                 </p>
               ))}
+              </details>
               <div className="inv-foot">
                 <span className="mono small muted">
                   {i.n_imported > 0

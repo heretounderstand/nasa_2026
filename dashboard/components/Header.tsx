@@ -11,10 +11,10 @@ export interface HeaderLabels {
 }
 
 const VIEWS = [
-  { href: "/", match: (p: string) => p === "/", label: "01 MAP" },
-  { href: "/scenario/s6/moon", match: (p: string) => p.startsWith("/scenario"), label: "02 SCENARIO" },
-  { href: "/priorities/moon", match: (p: string) => p.startsWith("/priorities"), label: "03 PRIORITIES" },
-  { href: "/investigations", match: (p: string) => p.startsWith("/investigations"), label: "04 INVESTIGATIONS" },
+  { href: "/", match: (p: string) => p === "/", label: "Map" },
+  { href: "/scenario/s6/moon", match: (p: string) => p.startsWith("/scenario"), label: "Scenarios" },
+  { href: "/priorities/moon", match: (p: string) => p.startsWith("/priorities"), label: "Priorities" },
+  { href: "/investigations", match: (p: string) => p.startsWith("/investigations"), label: "Investigations" },
 ];
 
 export default function Header({ labels }: { labels: HeaderLabels }) {
@@ -22,7 +22,7 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
-  const [note, setNote] = useState("Your question is matched to a scenario: the tool never answers it itself.");
+  const [note, setNote] = useState<string | null>(null);
 
   async function ask(e: React.FormEvent) {
     e.preventDefault();
@@ -56,27 +56,6 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
           <span className="brand-dot" aria-hidden="true" />
           FLAME IN FREEFALL
         </Link>
-        <form className="ask" role="search" onSubmit={ask}>
-          <label htmlFor="q" className="eyebrow">
-            Ask a question
-          </label>
-          <div className="ask-box">
-            <input
-              id="q"
-              type="text"
-              autoComplete="off"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Can this fabric be used in a lunar habitat?"
-            />
-            <button type="submit" disabled={busy}>
-              {busy ? "…" : "Analyse"}
-            </button>
-          </div>
-          <span className="ask-note" aria-live="polite">
-            {note}
-          </span>
-        </form>
         <nav aria-label="Views" className="views">
           {VIEWS.map((v) => {
             const on = v.match(path);
@@ -88,7 +67,31 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
             );
           })}
         </nav>
+        <form className="ask" role="search" onSubmit={ask}>
+          <label htmlFor="q" className="sr-only">
+            Ask a question
+          </label>
+          <div className="ask-box">
+            <input
+              id="q"
+              type="text"
+              autoComplete="off"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Ask: can this fabric be used on the Moon?"
+              title="Your question is matched to a scenario: the tool never answers it itself."
+            />
+            <button type="submit" disabled={busy}>
+              {busy ? "…" : "Ask"}
+            </button>
+          </div>
+        </form>
       </div>
+      {note && (
+        <div className="wrap ask-note" aria-live="polite">
+          {note}
+        </div>
+      )}
     </header>
   );
 }

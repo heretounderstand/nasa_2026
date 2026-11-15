@@ -3,7 +3,7 @@
 // Parties animées de la vue Scénario : bande de contextes, flamme, explication.
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lumens from "./Lumens";
 
 export interface StripItem {
@@ -14,11 +14,38 @@ export interface StripItem {
   aria: string;
 }
 
+// Centre l'élément actif d'une rangée défilante (onglets, contextes).
+function useKeepInView(dep: string) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    const box = el?.parentElement;
+    if (el && box && box.scrollWidth > box.clientWidth) {
+      box.scrollTo({ left: el.offsetLeft - box.offsetLeft - (box.clientWidth - el.offsetWidth) / 2, behavior: "smooth" });
+    }
+  }, [dep]);
+  return ref;
+}
+
+export function ScenarioTabs({ current, cid, items }: { current: string; cid: string; items: { id: string; title: string }[] }) {
+  const ref = useKeepInView(current);
+  return (
+    <nav className="tabs" aria-label="Scenarios">
+      {items.map((s) => (
+        <Link key={s.id} ref={s.id === current ? ref : undefined} href={`/scenario/${s.id}/${cid}`} aria-current={s.id === current ? "true" : undefined} scroll={false}>
+          {s.title}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
 export function ContextStrip({ sid, current, items }: { sid: string; current: string; items: StripItem[] }) {
+  const currentRef = useKeepInView(current);
   return (
     <div className="ctx-strip">
       {items.map((it) => (
-        <Link key={it.id} href={`/scenario/${sid}/${it.id}`} aria-current={it.id === current ? "true" : undefined} aria-label={it.aria} scroll={false}>
+        <Link key={it.id} ref={it.id === current ? currentRef : undefined} href={`/scenario/${sid}/${it.id}`} aria-current={it.id === current ? "true" : undefined} aria-label={it.aria} scroll={false}>
           {it.id === current && <motion.span layoutId="ctx-bar" className="bar" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
           <span className="name">
             <b>{it.label}</b>
@@ -58,7 +85,7 @@ export function Flame({ ctx, caption }: { ctx: string; caption: string }) {
         </AnimatePresence>
       </div>
       <div className="flame-cap">
-        <span className="eyebrow">What the tests show</span>
+        <span className="eyebrow">Flames in this gravity</span>
         <span>{caption}</span>
       </div>
     </aside>

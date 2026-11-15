@@ -231,3 +231,128 @@ table.src td { padding: 12px 12px 12px 0; border-top: 1px solid var(--rule); ver
   .matrix { height: 440px; }
   .level-word { font-size: 44px; }
 }
+
+/* ==========================================================================
+   Theme and hierarchy pass (15 Nov): softer dark, rounded surfaces, one
+   compact header, the answer first. Overrides the rules above.
+   ========================================================================== */
+:root {
+  --bg: #0B0E13;
+  --panel: #11161D;
+  --panel-2: #141A22;
+  --raise: #1A222C;
+  --rule: #232C37;
+  --rule-2: #3B4756;
+  --text: #F1EFEA;
+  --muted: #A3ACB7;
+  --soft: #D2D7DD;
+  --radius: 12px;
+}
+body { font-size: 16px; line-height: 1.5; background: radial-gradient(1100px 560px at 85% -8%, rgba(207, 232, 255, 0.055), transparent 62%) fixed, var(--bg); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.small { font-size: 14px; }
+.panel, .inv, .model-card, .missing, .matrix, .tip, .answer-card, .ctx-strip, details.fold, .stat-strip .stat { border-radius: var(--radius); }
+.ctx-strip, .matrix, .panel.map { overflow: hidden; }
+.panel.map { overflow-x: auto; }
+
+/* Header: brand, views, ask, on one line */
+.top-row { flex-wrap: nowrap; gap: 20px; padding-top: 10px; padding-bottom: 10px; }
+.brand { font-size: 19px; white-space: nowrap; }
+.views { gap: 2px; font-family: var(--display); font-size: 15px; flex-wrap: nowrap; }
+.views a { border: 0; border-radius: 999px; padding: 9px 14px; color: var(--muted); white-space: nowrap; }
+.views a:hover { color: var(--text); }
+.views a[aria-current="page"] { color: var(--bg); font-weight: 600; }
+.views .pill { inset: 0; border-radius: 999px; }
+.ask { flex: 0 1 360px; margin-left: auto; max-width: none; }
+.ask-box { border-radius: 999px; overflow: hidden; background: var(--panel-2); }
+.ask-box input { padding: 9px 16px; font-size: 14px; }
+.ask-box button { min-height: 40px; padding: 0 16px; font-size: 14px; }
+.ask-note { font-size: 13px; color: var(--soft); padding-bottom: 10px; min-height: 0; }
+
+/* Page rhythm and headings */
+main { gap: 40px; padding-top: 34px; }
+h1.hero { font-size: clamp(34px, 4.4vw, 56px); }
+h1.hero.question { font-size: clamp(26px, 3vw, 40px); line-height: 1.06; max-width: 920px; letter-spacing: 0; }
+h2.section { font-size: 28px; }
+.lede { margin: 0; font-size: 19px; line-height: 1.55; color: var(--soft); max-width: 840px; }
+.lede b { color: var(--fire-2); font-weight: 600; }
+
+/* Pills for segmented controls and scenario tabs */
+.seg { gap: 6px; }
+.seg button, .seg a { border-radius: 999px; padding: 8px 14px; min-height: 40px; }
+.tabs { flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-bottom: 4px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a { flex: 0 0 auto; white-space: nowrap; border-radius: 999px; padding: 8px 14px; }
+.tabs a[aria-current="true"] { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+
+/* Map page: three readings above the map */
+.stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.stat-strip .stat { border: 1px solid var(--rule); background: var(--panel); padding: 16px 20px; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; }
+.stat-strip .stat b { font-size: 36px; line-height: 1; white-space: nowrap; }
+.stat-strip .stat span { font-size: 14px; line-height: 1.45; color: var(--soft); }
+
+/* Scenario page: the answer first */
+.ctx-strip a { min-height: 84px; padding: 14px 16px; gap: 10px; }
+.ctx-strip .name b { font-size: 19px; }
+.answer-card { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; padding: 28px; background: var(--panel); border: 1px solid var(--rule-2); box-shadow: 0 0 70px rgba(207, 232, 255, 0.05); }
+.answer-card .flame-box { background: transparent; border: 0; flex: none; }
+.answer-card .flame-stage { min-height: 230px; padding: 12px; }
+.answer-card .flame-cap { border-top: 1px solid var(--rule); padding: 14px 0 0; font-size: 14px; color: var(--soft); }
+.answer { font-size: 21px; line-height: 1.5; }
+.level-word { font-size: 52px; }
+.missing { flex: 1 1 340px; align-self: flex-start; background: rgba(255, 122, 47, 0.05); border-style: solid; border-color: rgba(255, 122, 47, 0.45); }
+.missing ul { font-size: 15px; }
+.btn { border-radius: 999px; }
+.why { border-top: 0; padding-top: 0; }
+details.fold { border: 1px solid var(--rule); background: var(--panel); padding: 14px 18px; }
+details.fold > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: "+"; font-family: var(--mono); color: var(--muted); font-size: 18px; }
+details.fold[open] > summary::after { content: "–"; }
+details.fold.slim { padding: 10px 14px; background: transparent; }
+details.fold.slim > summary { font-size: 13px; font-weight: 500; color: var(--muted); }
+details.fold.slim[open] > summary { margin-bottom: 10px; }
+.inv { gap: 12px; }
+.inv-links a { border-radius: 999px; }
+.tag { border-radius: 999px; padding: 3px 9px; }
+.chip-score { border-radius: 999px; }
+.chips span { border-radius: 999px; padding: 5px 12px; }
+
+@media (max-width: 900px) {
+  .top-row { flex-wrap: wrap; }
+  .ask { flex: 1 1 100%; margin-left: 0; order: 3; }
+}
+
+@media (max-width: 720px) {
+  body { padding-bottom: 68px; }
+  main { gap: 28px; padding-top: 20px; }
+  /* Views become a bottom tab bar, within thumb reach */
+  .views { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: rgba(11, 14, 19, 0.96); backdrop-filter: blur(10px); border-top: 1px solid var(--rule); }
+  .views a { text-align: center; padding: 10px 2px; font-size: 13px; }
+  .lede { font-size: 17px; }
+  .stat-strip { gap: 10px; }
+  .stat-strip .stat { padding: 12px 14px; }
+  .stat-strip .stat b { font-size: 28px; min-width: 64px; }
+  .seg { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .seg button, .seg a { flex: 0 0 auto; }
+  .ctx-strip { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .ctx-strip a { flex: 0 0 134px; min-height: 76px; padding: 12px; }
+  .ctx-strip .name b { font-size: 16px; }
+  .answer-card { grid-template-columns: 1fr; padding: 18px; gap: 14px; }
+  .answer-card .flame-stage { min-height: 150px; zoom: 0.62; }
+  .answer { font-size: 18px; }
+  .level-word { font-size: 40px; }
+  .lumens.big i { width: 14px; }
+  .inv-grid { grid-template-columns: 1fr; }
+  .study.incident { grid-template-columns: 56px minmax(0, 1fr); }
+  h2.section { font-size: 24px; }
+}
+
+/* Second pass */
+.tabs { mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
+.ctx-strip { position: relative; }
+@media (max-width: 720px) {
+  /* backdrop-filter would make the header the containing block of the fixed tab bar */
+  .top { backdrop-filter: none; background: var(--bg); }
+  .ctx-strip { mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
+}

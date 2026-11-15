@@ -201,8 +201,8 @@ export default function KnowledgeMap({
                   <text x={sx(0.38) + 6} y={G.Y0 + 18}>{compact ? "MARS" : "MARS 0.38 g"}</text>
                 </g>
                 {/* En portrait, la note descend dans la zone vide pour ne pas croiser FM2. */}
-                <text x={sx(0.38) + 6} y={compact ? sy(0.31) : G.Y0 + 60} fill="#98A0AA" fontSize="13">Mars habitat:</text>
-                <text x={sx(0.38) + 6} y={(compact ? sy(0.31) : G.Y0 + 60) + 17} fill="#98A0AA" fontSize="13">atmosphere not defined</text>
+                <text x={sx(0.38) + 6} y={sy(compact ? 0.31 : 0.245)} fill="#98A0AA" fontSize="13">Mars habitat:</text>
+                <text x={sx(0.38) + 6} y={sy(compact ? 0.31 : 0.245) + 17} fill="#98A0AA" fontSize="13">atmosphere not defined</text>
                 {layers.lim && (
                   <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <polygon
@@ -264,7 +264,7 @@ export default function KnowledgeMap({
                 <g key={m.id}>
                   {moon && <circle className="pg" cx={x} cy={y} r={10} fill="none" stroke="#FF7A2F" strokeWidth={2} style={{ transformOrigin: `${x}px ${y}px` }} />}
                   <rect x={x - 7} y={y - 7} width={14} height={14} fill={moon ? "#FF7A2F" : "none"} stroke={color} strokeWidth={2} transform={`rotate(45 ${x} ${y})`} />
-                  <text x={right ? x - 14 : x + dx} y={y + 4} textAnchor={right ? "end" : "start"} fill={color} fontWeight={600} paintOrder="stroke" stroke="#07090C" strokeWidth={4}>
+                  <text x={right ? x - 14 : x + dx} y={y + 4} textAnchor={right ? "end" : "start"} fill={color} fontWeight={600} paintOrder="stroke" stroke="#0B0E13" strokeWidth={4}>
                     {label}
                   </text>
                   {m.id === "earth" && <text x={x - 14} y={y + 20} textAnchor="end" fill="#98A0AA">reference: certification</text>}
@@ -315,7 +315,7 @@ function Inset({ band, points, box }: { band: LimitBand; points: MapPoint[]; box
   const pts = points.filter((p) => p.src === band.source_id && p.g != null && p.o2 != null);
   return (
     <g aria-label="Close-up of the flammability limit">
-      <rect x={bx - 44} y={by - 30} width={bw + 60} height={bh + 62} fill="#07090C" stroke="#1E252E" />
+      <rect x={bx - 44} y={by - 30} width={bw + 60} height={bh + 62} fill="#0B0E13" stroke="#1E252E" />
       <text x={bx - 34} y={by - 12} fontFamily="var(--mono)" fontSize="11" fill="#98A0AA">{`ZOOM · PMMA · ${fr(band.pressure_kpa)} kPa`}</text>
       {[0.13, 0.14, 0.15].map((o) => (
         <g key={o}>

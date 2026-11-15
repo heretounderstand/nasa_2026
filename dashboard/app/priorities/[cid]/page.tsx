@@ -111,7 +111,7 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorities/[cid]">,
             <b>{pad2(i + 1)}</b>
             <span style={{ fontSize: 17, fontWeight: 600, lineHeight: 1.4 }}>{g.text}</span>
             <span className="stack" style={{ gap: 6, alignItems: "flex-end" }}>
-              <Lumens level={g.scen.size} total={6} />
+              <Lumens level={g.scen.size} total={D.scenarios.length} />
               <span className="mono small muted">
                 {g.scen.size} scenario{g.scen.size > 1 ? "s" : ""} lit
               </span>

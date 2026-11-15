@@ -12,20 +12,20 @@ export default function InvestigationsPage() {
       <h1 className="hero">
         {items.length} investigations. <span>What each one studied, ranked for where crews will live.</span>
       </h1>
-      <div className="row" style={{ gap: 40 }}>
-        <div className="stat" style={{ flex: "1 1 240px" }}>
+      <div className="stat-strip">
+        <div className="stat">
           <b>{used}</b>
           <span>feed a scenario or are quoted in one.</span>
         </div>
-        <div className="stat" style={{ flex: "1 1 240px" }}>
+        <div className="stat">
           <b>{summarised}</b>
           <span>are summarised only: PSI’s table gives conditions or test days, but no outcome.</span>
         </div>
-        <div className="stat" style={{ flex: "1 1 240px" }}>
+        <div className="stat">
           <b className="fire">{items.length - used - summarised}</b>
           <span>are not used. The reason is stated on each card.</span>
         </div>
-        <div className="stat" style={{ flex: "1 1 240px" }}>
+        <div className="stat">
           <b>{imported.toLocaleString("en-US")}</b>
           <span>
             tests imported, each traceable to a file and a row.{" "}

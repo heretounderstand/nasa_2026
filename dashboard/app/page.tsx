@@ -32,39 +32,40 @@ export default function CartePage() {
 
   return (
     <>
-      <h1 className="hero">
-        Knowledge is a light. <span>This is where it goes out.</span>
-      </h1>
+      <div className="stack" style={{ gap: 14 }}>
+        <h1 className="hero">
+          Knowledge is a light. <span>This is where it goes out.</span>
+        </h1>
+        <p className="lede">
+          Every dot is a NASA combustion test. Where they cluster, we know how fire behaves. Between 0 and 1 g, where crews will live
+          on the Moon and Mars, it is almost dark, and <b>less gravity does not mean less fire</b>.
+        </p>
+      </div>
+      <section aria-label="Key readings" className="stat-strip">
+        <div className="stat">
+          <b>{microSources.size}</b>
+          <span>sources with microgravity measurements: the lit column on the left.</span>
+        </div>
+        <div className="stat">
+          <b>{partial.length}</b>
+          <span>
+            tests in partial gravity, from {partialSources.size} sources, lasting 5 s to about 2.5 min. None are in PSI: they come from
+            papers and NASA reports.
+          </span>
+        </div>
+        <div className="stat">
+          <b className="fire">{num(minLevel.gravity_g)} g</b>
+          <span>is where the flammability limit of PMMA is lowest, close to lunar gravity.</span>
+        </div>
+      </section>
       <div className="row">
         <div className="grow">
           <KnowledgeMap points={points} markers={markers} upcoming={D.upcoming} band={D.limit_band} sourceTitles={sourceTitles} />
         </div>
         <aside className="side stack" style={{ gap: 28 }}>
-          <section aria-label="Key readings" className="stack" style={{ gap: 16 }}>
-            <div className="eyebrow">Key readings</div>
-            <div className="stat">
-              <b>{microSources.size}</b>
-              <span>sources with microgravity measurements. The left-hand column is lit.</span>
-            </div>
-            <div className="stat">
-              <b>{partial.length}</b>
-              <span>
-                tests in partial gravity, from {partialSources.size} sources, all in a drop tower, a parabolic flight or a rocket:
-                from 5 s to about 2.5 min. Between 0 and 1 g, it is almost dark. PSI holds no partial-gravity combustion
-                data: these come from published papers and NASA reports, listed in Sources.
-              </span>
-            </div>
-            <div className="stat">
-              <b className="fire">↓</b>
-              <span>
-                The flammability limit of PMMA is lowest near {num(minLevel.gravity_g)} g, close to lunar gravity: less gravity does
-                not mean less fire.
-              </span>
-            </div>
-          </section>
           <section aria-label="Scenarios" className="stack">
             <div className="eyebrow" style={{ marginBottom: 8 }}>
-              Scenarios · lunar habitat
+              Seven scenarios · confidence in a lunar habitat
             </div>
             {D.scenarios.map((s) => {
               const a = answerFor(s.scenario_id, "moon")!;

@@ -3,7 +3,7 @@
 // missing from those facts, or any other confidence level, gets the text
 // rejected, and the interface keeps the rule-based version.
 import { answerFor, contextById, scenarioById } from "@/lib/data";
-import { answerFacts, confidenceFacts, numbersAllowed } from "@/lib/explain";
+import { answerFacts, numbersAllowed } from "@/lib/explain";
 import { geminiJson } from "@/lib/gemini";
 import { CONF_WORD } from "@/lib/labels";
 
@@ -12,7 +12,8 @@ Strict rules:
 - Use only the facts provided. Add no outside knowledge.
 - Write no number that does not appear verbatim in the facts. Do not spell numbers out in words.
 - Never change the confidence level and never suggest another one.
-- At most 3 sentences, plain and sober, with no operational advice. This is not a flight-decision tool.`;
+- At most 2 sentences, plain and sober, with no operational advice. This is not a flight-decision tool.
+- Say what the experiments show for this case. Do not state or explain the confidence level and do not list what is missing: both are displayed next to your text.`;
 
 const cache = new Map<string, string>();
 
@@ -33,8 +34,6 @@ export async function POST(request: Request) {
     `Question: ${sc.question}`,
     `Setting: ${ctx.label}.`,
     ...answerFacts(sc, a, ctx),
-    ...confidenceFacts(a),
-    ...a.gaps.map((g) => `Gap: ${g}`),
   ].join("\n");
 
   const out = await geminiJson<{ explanation: string }>({
