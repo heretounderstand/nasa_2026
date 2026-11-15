@@ -22,12 +22,12 @@ CONTEXTS: dict[str, MissionContext] = {
     c.context_id: c
     for c in (
         MissionContext(
-            context_id="terre",
-            label="Terre",
+            context_id="earth",
+            label="Earth",
             conditions=Conditions(gravity_g=1.0, o2_mole_fraction=0.21, pressure_kpa=101.0),
             computed=False,
             in_priorities=False,
-            notes="Référence : cadre de la certification NASA-STD-6001.",
+            notes="Reference: the NASA-STD-6001 certification framework.",
         ),
         MissionContext(
             context_id="iss",
@@ -40,15 +40,15 @@ CONTEXTS: dict[str, MissionContext] = {
             conditions=Conditions(gravity_g=0.0, o2_mole_fraction=0.265, pressure_kpa=73.5),
         ),
         MissionContext(
-            context_id="lune",
-            label="Habitat lunaire",
+            context_id="moon",
+            label="Lunar habitat",
             conditions=Conditions(gravity_g=0.16, o2_mole_fraction=0.34, pressure_kpa=56.5),
         ),
         MissionContext(
             context_id="mars",
-            label="Habitat martien",
+            label="Mars habitat",
             conditions=Conditions(gravity_g=0.38),
-            notes="Atmosphère d'habitat non définie (O2 et pression inconnus).",
+            notes="Habitat atmosphere not defined (O2 and pressure unknown).",
         ),
     )
 }

@@ -1,19 +1,19 @@
-// Aiguillage par mots-clés : secours quand Gemini n'est pas disponible.
+// Keyword routing: the fallback when Gemini is unavailable.
 import type { ContextId, ScenarioId } from "./data";
 
 const CTX: [RegExp, ContextId][] = [
-  [/lun|moon/i, "lune"],
-  [/mars|martien/i, "mars"],
+  [/moon|lunar|\blun/i, "moon"],
+  [/mars|martian/i, "mars"],
   [/gateway/i, "gateway"],
   [/\biss\b|station/i, "iss"],
 ];
 const SCN: [RegExp, ScenarioId][] = [
-  [/c[âa]ble|\bfils?\b|wire|[ée]lectri|gaine/i, "s1"],
-  [/fum|d[ée]tect|smoke/i, "s5"],
-  [/froide|invisible|goutte|carburant|droplet/i, "s3"],
-  [/gaz|fuite|leak/i, "s4"],
-  [/tissu|textile|fabric|v[êe]tement|enrichi/i, "s2"],
-  [/certifi|mat[ée]riau|norme|s[ée]curit[ée]/i, "s6"],
+  [/wire|cable|electric|insulation|c[âa]ble/i, "s1"],
+  [/smoke|detect|alarm|fum/i, "s5"],
+  [/cool flame|invisible|droplet|fuel drop|froide/i, "s3"],
+  [/\bgas\b|leak|gaz|fuite/i, "s4"],
+  [/fabric|textile|cloth|enriched|tissu/i, "s2"],
+  [/certif|material|standard|safe|mat[ée]riau/i, "s6"],
 ];
 
 export function routeByKeywords(q: string) {
@@ -21,7 +21,7 @@ export function routeByKeywords(q: string) {
   const s = SCN.find(([re]) => re.test(q));
   return {
     scenario_id: s?.[1] ?? ("s6" as ScenarioId),
-    context_id: c?.[1] ?? ("lune" as ContextId),
+    context_id: c?.[1] ?? ("moon" as ContextId),
     matched: Boolean(c && s),
   };
 }

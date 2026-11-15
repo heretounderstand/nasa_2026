@@ -67,22 +67,22 @@ class OutcomeType(StrEnum):
 
 
 class Confidence(StrEnum):
-    TRES_FAIBLE = "tres_faible"
-    FAIBLE = "faible"
-    MOYENNE = "moyenne"
-    ELEVEE = "elevee"
+    TRES_FAIBLE = "very_low"
+    FAIBLE = "low"
+    MOYENNE = "medium"
+    ELEVEE = "high"
 
 
 class EvidenceLevel(StrEnum):
-    LIMITEES = "limitees"
-    MOYENNES = "moyennes"
-    SOLIDES = "solides"
+    LIMITEES = "limited"
+    MOYENNES = "medium"
+    SOLIDES = "robust"
 
 
 class AgreementLevel(StrEnum):
-    FAIBLE = "faible"
-    MOYEN = "moyen"
-    ELEVE = "eleve"
+    FAIBLE = "low"
+    MOYEN = "medium"
+    ELEVE = "high"
 
 
 # --------------------------------------------------------------------------- #

@@ -11,9 +11,9 @@ export interface HeaderLabels {
 }
 
 const VIEWS = [
-  { href: "/", match: (p: string) => p === "/", label: "01 CARTE" },
-  { href: "/scenario/s6/lune", match: (p: string) => p.startsWith("/scenario"), label: "02 SCÉNARIO" },
-  { href: "/priorites/lune", match: (p: string) => p.startsWith("/priorites"), label: "03 PRIORITÉS" },
+  { href: "/", match: (p: string) => p === "/", label: "01 MAP" },
+  { href: "/scenario/s6/moon", match: (p: string) => p.startsWith("/scenario"), label: "02 SCENARIO" },
+  { href: "/priorities/moon", match: (p: string) => p.startsWith("/priorities"), label: "03 PRIORITIES" },
 ];
 
 export default function Header({ labels }: { labels: HeaderLabels }) {
@@ -21,13 +21,13 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
-  const [note, setNote] = useState("La question est traduite en scénario : l'outil ne répond jamais lui-même.");
+  const [note, setNote] = useState("Your question is matched to a scenario: the tool never answers it itself.");
 
   async function ask(e: React.FormEvent) {
     e.preventDefault();
     if (!q.trim()) return;
     setBusy(true);
-    setNote("Aiguillage en cours…");
+    setNote("Routing…");
     try {
       const r = await fetch("/api/route-question", {
         method: "POST",
@@ -36,13 +36,13 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
       }).then((x) => x.json());
       const sc = labels.scenarios[r.scenario_id];
       const cx = labels.contexts[r.context_id];
-      if (!sc || !cx) throw new Error("réponse invalide");
+      if (!sc || !cx) throw new Error("invalid response");
       setNote(
-        `Traduit en « ${sc} » · ${cx}${r.pertinent ? "" : " (correspondance approximative)"} — aiguillage : ${r.via}.`,
+        `Matched to “${sc}” · ${cx}${r.relevant ? "" : " (approximate match)"}. Routed by ${r.via}.`,
       );
       router.push(`/scenario/${r.scenario_id}/${r.context_id}`);
     } catch {
-      setNote("Aiguillage indisponible : choisissez un scénario dans la liste.");
+      setNote("Routing unavailable: pick a scenario from the list.");
     } finally {
       setBusy(false);
     }
@@ -57,7 +57,7 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
         </Link>
         <form className="ask" role="search" onSubmit={ask}>
           <label htmlFor="q" className="eyebrow">
-            Poser une question
+            Ask a question
           </label>
           <div className="ask-box">
             <input
@@ -66,17 +66,17 @@ export default function Header({ labels }: { labels: HeaderLabels }) {
               autoComplete="off"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Ce tissu peut-il servir dans un habitat lunaire ?"
+              placeholder="Can this fabric be used in a lunar habitat?"
             />
             <button type="submit" disabled={busy}>
-              {busy ? "…" : "Analyser"}
+              {busy ? "…" : "Analyse"}
             </button>
           </div>
           <span className="ask-note" aria-live="polite">
             {note}
           </span>
         </form>
-        <nav aria-label="Vues" className="views">
+        <nav aria-label="Views" className="views">
           {VIEWS.map((v) => {
             const on = v.match(path);
             return (

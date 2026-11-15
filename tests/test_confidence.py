@@ -138,7 +138,7 @@ def test_conformal_quantile_small_sample():
 def test_gravity_status():
     df = dense_micro_df()
     assert c.gravity_status(CONTEXTS["iss"].conditions.gravity_regime, df)[0] == "micro_long"
-    assert c.gravity_status(CONTEXTS["lune"].conditions.gravity_regime, df)[0] == "partial_untested"
+    assert c.gravity_status(CONTEXTS["moon"].conditions.gravity_regime, df)[0] == "partial_untested"
 
 
 # --------------------------------------------------------------- de bout en bout --
@@ -161,7 +161,7 @@ def test_assess_lunar_short_duration_capped():
     exps = [exp(i, 0.16, 0.30 + 0.01 * i, 56.5, platform="drop_tower_centrifuge",
                 source="src_a" if i % 2 else "src_b") for i in range(8)]
     df = c.experiments_to_frame(exps)
-    ans = c.assess(scenario("lune"), CONTEXTS["lune"], df, "classification")
+    ans = c.assess(scenario("moon"), CONTEXTS["moon"], df, "classification")
     assert c.CEIL_PARTIAL_NO_LONG in ans.ceilings_applied
     assert ans.confidence in (C.TRES_FAIBLE, C.FAIBLE)
     assert ans.components["gravity_regime"] == "partial_short"
@@ -189,13 +189,13 @@ def test_assess_model_above_baseline_shows_prediction():
 
 def test_assess_earth_is_reference_only():
     with pytest.raises(ValueError):
-        c.assess(scenario("terre"), CONTEXTS["terre"], dense_micro_df(), "classification")
+        c.assess(scenario("earth"), CONTEXTS["earth"], dense_micro_df(), "classification")
 
 
 def test_assess_mars_reports_missing_atmosphere():
     ans = c.assess(scenario("mars"), CONTEXTS["mars"], dense_micro_df(), "classification")
     assert ans.components["features"] == ["gravity_g"]
-    assert any("Atmosphère de l'habitat à définir" in g for g in ans.gaps)
+    assert any("Habitat atmosphere not yet defined" in g for g in ans.gaps)
     assert c.CEIL_OUT_OF_ENVELOPE in ans.ceilings_applied
     assert ans.confidence in (C.TRES_FAIBLE, C.FAIBLE)
 

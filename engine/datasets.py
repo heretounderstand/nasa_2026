@@ -28,28 +28,28 @@ class Question:
 
 QUESTIONS: dict[str, Question] = {q.question_type: q for q in [
     Question("gas_flame_self_extinction", "classification",
-             "Une flamme de gaz en microgravité s'éteint-elle seule ?",
-             "extinction spontanée / flamme maintenue",
+             "Does a gas flame in microgravity go out on its own?",
+             "self-extinction / sustained flame",
              ("o2_mole_fraction", "pressure_kpa", "extra.fuel_mole_fraction", "extra.fuel_flow_mg_s")),
     Question("cool_flame_after_extinction", "classification",
-             "Une flamme froide invisible persiste-t-elle après l'extinction ?",
-             "flamme froide / pas de flamme froide",
+             "Does an invisible cool flame persist after extinction?",
+             "cool flame / no cool flame",
              ("o2_mole_fraction", "pressure_kpa", "extra.he_mole_fraction", "extra.droplet_d0_mm")),
     Question("smoke_particle_size", "regression",
-             "Quelle taille de particules de fumée (diamètre de masse moyenne) ?",
-             "diamètre de masse moyenne (µm)",
+             "How large are the smoke particles (diameter of average mass)?",
+             "diameter of average mass (µm)",
              ("flow_velocity_cm_s", "extra.heating_ratio_rt_r0", "extra.aging_s")),
     Question("wire_limiting_oxygen", "regression",
-             "Sous quelle teneur en O2 la flamme ne se propage-t-elle plus le long d'un câble ?",
-             "O2 limite de propagation (fraction molaire)",
+             "Below what O2 level does a flame stop spreading along a wire?",
+             "limiting O2 for flame spread (mole fraction)",
              ("gravity_g", "flow_velocity_cm_s")),
     Question("solid_burns", "classification",
-             "Un matériau solide (tissu, plastique) continue-t-il de brûler ?",
-             "flamme entretenue / extinction",
+             "Does a solid material (fabric, plastic) keep burning?",
+             "sustained flame / extinction",
              ("gravity_g", "o2_mole_fraction", "pressure_kpa")),
     Question("limit_shift_vs_1g", "classification",
-             "Le matériau est-il plus inflammable qu'au test de certification à 1 g ?",
-             "plus / aussi / moins inflammable qu'à 1 g",
+             "Is the material more flammable than in the 1 g certification test?",
+             "more / as / less flammable than at 1 g",
              ("gravity_g", "pressure_kpa")),
 ]}
 
@@ -76,7 +76,7 @@ def _limits_to_burn_rows(lim: pd.DataFrame) -> pd.DataFrame:
     out["o2_mole_fraction"] = out["outcome_value"].astype(float)
     out["outcome_type"] = out["extra.limit_kind"].map(lambda k: "extinction" if "MOC" in k else "sustained")
     out["outcome_value"] = None
-    out["notes"] = out["notes"] + " (limite convertie en essai : flamme survivante ou éteinte)"
+    out["notes"] = out["notes"] + " (limit converted to a test outcome: flame survived or went out)"
     out["dataset"] = "solid_burn"
     return out
 
@@ -123,8 +123,8 @@ def limit_shift(df: pd.DataFrame) -> pd.DataFrame:
                 dataset="limit_shift", outcome_type="limit_o2",
                 outcome_value=cls, outcome_unit="class",
                 o2_mole_fraction=None,
-                notes=(f"ΔO2 = {delta_pts:+.2f} pt par rapport à 1 g "
-                       f"(lignes {', '.join(at_g['experiment_id'])} vs {', '.join(ref['experiment_id'])})"),
+                notes=(f"ΔO2 = {delta_pts:+.2f} pt relative to 1 g "
+                       f"(rows {', '.join(at_g['experiment_id'])} vs {', '.join(ref['experiment_id'])})"),
             )
             first["extra.delta_o2_pts"] = round(delta_pts, 2)
             rows.append(first)

@@ -84,16 +84,16 @@ def test_anti_leakage():
 
 
 def test_contexts():
-    assert not CONTEXTS["terre"].computed
-    assert not CONTEXTS["terre"].in_priorities
-    assert CONTEXTS["lune"].conditions.gravity_regime == GravityRegime.LUNAR
+    assert not CONTEXTS["earth"].computed
+    assert not CONTEXTS["earth"].in_priorities
+    assert CONTEXTS["moon"].conditions.gravity_regime == GravityRegime.LUNAR
     assert CONTEXTS["mars"].conditions.o2_mole_fraction is None
 
 
 def test_effective_conditions_override():
-    x = effective_conditions(CONTEXTS["lune"], Conditions(o2_mole_fraction=0.30, fuel="PMMA"))
+    x = effective_conditions(CONTEXTS["moon"], Conditions(o2_mole_fraction=0.30, fuel="PMMA"))
     assert x.o2_mole_fraction == 0.30
     assert x.pressure_kpa == 56.5
     assert x.fuel == "PMMA"
-    y = effective_conditions(CONTEXTS["lune"], Conditions(gravity_g=0.38))
+    y = effective_conditions(CONTEXTS["moon"], Conditions(gravity_g=0.38))
     assert y.gravity_regime == GravityRegime.MARTIAN

@@ -30,7 +30,7 @@ def _add(res: ImportResult, where: str, **kw) -> None:
     try:
         res.experiments.append(Experiment(**kw))
     except ValidationError as e:
-        res.skip(where, f"validation : {e.errors()[0]['msg']}")
+        res.skip(where, f"validation: {e.errors()[0]['msg']}")
 
 
 def _f(v) -> float | None:
@@ -58,7 +58,7 @@ def import_psi159() -> ImportResult:
         where = f"{rel(path)}:{row_no}"
         end = str(r["Self-ext or flow term"]).strip()
         if end not in ("SE", "FT"):
-            res.skip(where, f"pas de flamme établie (« {end} »)")
+            res.skip(where, f"no established flame ('{end}')")
             continue
         fuel_raw = str(r["Fuel"]).strip()
         fuel = fuel_raw.split()[-1]
@@ -82,10 +82,10 @@ def import_psi159() -> ImportResult:
             outcome_type="extinction" if end == "SE" else "sustained",
             outcome_value=None,
             is_measured=True,
-            extinction_criterion="SE : extinction spontanée ; FT : débit coupé, flamme présente",
+            extinction_criterion="SE: self-extinction; FT: flow terminated with the flame still present",
             quality_flags=flags,
-            notes=(f"combustible « {fuel_raw} » ; durée de combustion {r['burn time (sec)']} s"
-                   + (f" ; {comment}" if comment else "")),
+            notes=(f"fuel '{fuel_raw}'; burn time {r['burn time (sec)']} s"
+                   + (f"; {comment}" if comment else "")),
         )
     return res
 
@@ -103,7 +103,7 @@ def import_psi10() -> ImportResult:
         where = f"{rel(path)}:{row_no}"
         o2, p = _f(r["XO2 (init)"]), _f(r["pmean (atm)"])
         if o2 is None or p is None:
-            res.skip(where, "O2 ou pression absents")
+            res.skip(where, "O2 or pressure missing")
             continue
         _add(
             res, where,
@@ -112,7 +112,7 @@ def import_psi10() -> ImportResult:
             platform="iss", gravity_g=0.0, o2_mole_fraction=o2, pressure_kpa=p * ATM_KPA,
             fuel=str(r["Fuel"]), fuel_type="gas", geometry="normal_jet_flame",
             outcome_type="descriptive", is_measured=True, quality_flags=list(ISS_FLAGS),
-            notes="Conditions d'essai seulement : le tableau PSI ne donne pas de résultat.",
+            notes="Test conditions only: the PSI table gives no outcome.",
         )
     return res
 
@@ -137,7 +137,7 @@ def import_psi69() -> ImportResult:
         diluent = "CO2" if co2 > 0 else "He" if he > 0 else "N2"
         p_mmhg = _f(r[col["Ambient pressure"]])
         if not p_mmhg or p_mmhg <= 0:
-            res.skip(where, f"pression ambiante impossible ({p_mmhg} mmHg)")
+            res.skip(where, f"impossible ambient pressure ({p_mmhg} mmHg)")
             continue
         d0 = _f(r[col["Droplet initial diameter"]])
         extra = {"co2_mole_fraction": co2, "he_mole_fraction": he}
@@ -153,8 +153,8 @@ def import_psi69() -> ImportResult:
             geometry="free_droplet", extra=extra,
             outcome_type=outcome, outcome_value=end if outcome == "descriptive" else None,
             is_measured=True, quality_flags=list(ISS_FLAGS),
-            extinction_criterion="Fin d'essai déclarée : Extinction / Completion / Disruption",
-            notes=f"diamètre d'extinction visible {r[col['Visible flame extinction diameter']]} mm",
+            extinction_criterion="Reported test end: Extinction / Completion / Disruption",
+            notes=f"visible flame extinction diameter {r[col['Visible flame extinction diameter']]} mm",
         )
     return res
 
@@ -186,14 +186,14 @@ def import_psi39() -> ImportResult:
         where = f"{rel(path)}#Master Sheet:{row_no}"
         flex = r["Flex Number"]
         if flex not in d.index:
-            res.skip(where, "absent de la feuille DATA")
+            res.skip(where, "missing from the DATA sheet")
             continue
         dr = d.loc[flex]
         if isinstance(dr, pd.DataFrame):
-            res.skip(where, "numéro FLEX en double dans DATA")
+            res.skip(where, "duplicate FLEX number in DATA")
             continue
         if str(dr["Completed Analysis?"]).strip() != "Yes":
-            res.skip(where, "analyse non terminée")
+            res.skip(where, "analysis not completed")
             continue
         p_atm = _f(r["Pressure"])
         cool = not is_blank(dr["kcool ( mm^2/s )"])
@@ -213,8 +213,8 @@ def import_psi39() -> ImportResult:
             outcome_type="sustained" if cool else "extinction",
             outcome_value="cool_flame" if cool else "no_cool_flame",
             is_measured=True, quality_flags=list(ISS_FLAGS),
-            extinction_criterion="Flamme froide = vitesse de combustion kcool mesurée après "
-                                 "extinction de la flamme chaude (feuille DATA)",
+            extinction_criterion="Cool flame = burning rate kcool measured after "
+                                 "hot-flame extinction (DATA sheet)",
             notes=None if is_blank(dr["kcool ( mm^2/s )"]) else f"kcool {dr['kcool ( mm^2/s )']} mm²/s",
         )
     return res
@@ -250,7 +250,7 @@ def import_saffire() -> ImportResult:
         for row_no, r in df.iterrows():
             where = f"{rel(path)}:{row_no}"
             if not str(r["Sample Number"]).strip().startswith("S"):
-                res.skip(where, "ligne de visualisation d'écoulement")
+                res.skip(where, "flow-visualisation row")
                 continue
             o2 = parse_number(r[o2col]) if o2col else None
             flow = parse_number(r[[c for c in df.columns if c.startswith("Air Flow")][0]])
@@ -267,8 +267,8 @@ def import_saffire() -> ImportResult:
                 geometry=f"fabric_sheet_{direction.lower()}",
                 outcome_type="sustained" if (burn is None or (burn.value or 0) > 0) else "extinction",
                 is_measured=True, quality_flags=flags + ["platform_cygnus_vehicle"],
-                notes=(f"durée de combustion {burn.value:g} s" if burn and burn.value else
-                       "échantillon de 94 × 40,6 cm brûlé ; durée non tabulée"),
+                notes=(f"burn time {burn.value:g} s" if burn and burn.value else
+                       "94 × 40.6 cm sample burned; duration not tabulated"),
             )
 
     path = raw_path("PSI-99", "PSI-99_Experimental table_SAFFIRE-2.csv")
@@ -278,7 +278,7 @@ def import_saffire() -> ImportResult:
         where = f"{rel(path)}:{row_no}"
         sample = str(r["Sample Number"]).strip()
         if not re.fullmatch(r"2-\d", sample):
-            res.skip(where, "ligne de note ou de visualisation")
+            res.skip(where, "note or flow-visualisation row")
             continue
         mat, mflags = _saffire_material(r["Material"], mat_prev)
         mat_prev = mat
@@ -306,11 +306,11 @@ def import_saffire() -> ImportResult:
             outcome_type="extinction" if ug_ext else "sustained",
             outcome_value=ug_len, outcome_unit="burn_length_text",
             quality_flags=flags + ISS_FLAGS + ["platform_cygnus_vehicle"],
-            notes=f"microgravité, longueur brûlée « {ug_len} », vitesse « {r['?-g Spread Length']} »",
+            notes=f"microgravity, burn length '{ug_len}', spread '{r['?-g Spread Length']}'",
             **common,
         )
         if "Nomex" in g1_len or "n/a" in g1_len:
-            res.skip(where + " (1 g)", "résultat 1 g mixte PMMA/Nomex non classable")
+            res.skip(where + " (1 g)", "mixed PMMA/Nomex 1 g result cannot be classified")
             continue
         g1_ext = g1_len.startswith("~ 0")
         # L'O2 du tableau est mesuré en orbite (note 1) : il ne s'applique pas à l'essai au sol.
@@ -320,7 +320,7 @@ def import_saffire() -> ImportResult:
             outcome_type="extinction" if g1_ext else "sustained",
             outcome_value=g1_len, outcome_unit="burn_length_text",
             quality_flags=flags + ["ground_reference_test"],
-            notes=f"essai au sol à 1 g, longueur brûlée « {g1_len} », propagation « {r['1-g Spread Rate']} »",
+            notes=f"1 g ground test, burn length '{g1_len}', spread '{r['1-g Spread Rate']}'",
             **common_1g,
         )
     return res
@@ -356,11 +356,11 @@ def import_psi101() -> ImportResult:
             continue
         mat = str(mat).strip()
         if mat == "DBP":
-            res.skip(where, "DBP : aérosol d'étalonnage")
+            res.skip(where, "DBP: calibration aerosol")
             continue
         val = _f(r[target])
         if val is None or val <= 0:
-            res.skip(where, "diamètre absent ou nul")
+            res.skip(where, "diameter missing or zero")
             continue
         flight = str(r[flight_col]).strip()
         aging = _f(r["Net Aging Duration"])
@@ -376,7 +376,7 @@ def import_psi101() -> ImportResult:
             fuel=mat.lower(), fuel_type="solid", geometry="heated_sample_smoke", extra=extra,
             outcome_type="detector_signal", outcome_value=float(val), outcome_unit="um_mass_mean_diameter",
             is_measured=True, quality_flags=list(ISS_FLAGS),
-            notes=f"campagne {'SAME' if flight == '1' else 'SAME-R' if flight == '2' else flight} ; {r['Description']}",
+            notes=f"{'SAME' if flight == '1' else 'SAME-R' if flight == '2' else flight} campaign; {r['Description']}",
         )
     return res
 
@@ -395,7 +395,7 @@ def import_bass() -> ImportResult:
         where = f"{rel(path)}:{row_no}"
         o2 = _f(r[o2col])
         if is_blank(r["Test #"]) or o2 is None:
-            res.skip(where, "essai sans numéro ou sans O2")
+            res.skip(where, "test without a number or without O2")
             continue
         _add(
             res, where, experiment_id=f"PSI-25-{r['Test #']}-{row_no}", source_id="PSI-25",
@@ -403,7 +403,7 @@ def import_bass() -> ImportResult:
             platform="iss", gravity_g=0.0, o2_mole_fraction=o2 / 100,
             fuel=str(r["Fuel Sample Material"]).strip(), fuel_type="solid",
             outcome_type="descriptive", is_measured=True, quality_flags=list(ISS_FLAGS),
-            notes="Résultat non tabulé (voir BASS-II Summary Report).",
+            notes="Outcome not tabulated (see the BASS-II Summary Report).",
         )
     return res
 

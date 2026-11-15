@@ -37,7 +37,7 @@ SOURCES: dict[str, Source] = {s.source_id: s for s in [
            reference="doi:10.1016/j.proci.2022.07.002 ; https://hdl.handle.net/2115/92809"),
     Source(source_id="olson2024_pmma", kind=SourceKind.ARTICLE, year=2024, access=Access.RESTRICTED,
            title="Olson et al., Partial gravity flammability of cast PMMA rods in concurrent axial "
-                 "stagnation flow, Fire Safety Journal 150, 104267 (lu via la figure de Ferkul, LPSC 2026)",
+                 "stagnation flow, Fire Safety Journal 150, 104267 (read from the figure reproduced in Ferkul, LPSC 2026)",
            reference="https://www.sciencedirect.com/science/article/abs/pii/S0379711224001802"),
     Source(source_id="ferkul2026_lpsc", kind=SourceKind.REPORT, year=2026, access=Access.OPEN,
            title="Ferkul et al., Material Flammability at Lunar and Martian Gravity (LPSC 2026)",
@@ -47,9 +47,9 @@ SOURCES: dict[str, Source] = {s.source_id: s for s in [
                  "Rotating Sounding Rocket (ASGSR 2025)",
            reference="NTRS 20250010653 ; https://ntrs.nasa.gov/citations/20250010653"),
     Source(source_id="fm2", kind=SourceKind.UPCOMING, year=2026, access=Access.PENDING,
-           title="Flammability of Materials on the Moon (FM2) — première combustion sur la Lune",
+           title="Flammability of Materials on the Moon (FM2): first combustion experiment on the Moon",
            reference="NTRS 20240008623 ; https://www.nasa.gov/flammability-of-materials-on-the-moon-fm2/"),
     Source(source_id="nasa_std_6001", kind=SourceKind.STANDARD, year=None, access=Access.OPEN,
-           title="NASA-STD-6001, Test 1 : propagation ascendante de flamme (certification à 1 g)",
+           title="NASA-STD-6001, Test 1: upward flame propagation (1 g certification)",
            reference="NASA-STD-6001"),
 ]}

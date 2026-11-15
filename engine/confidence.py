@@ -43,9 +43,9 @@ CEIL_SINGLE_SOURCE = "single_source"
 CEIL_MODEL_BELOW_BASELINE = "model_below_baseline"
 
 REGIME_FR = {
-    GravityRegime.MICRO: "microgravité", GravityRegime.LUNAR: "gravité lunaire",
-    GravityRegime.MARTIAN: "gravité martienne", GravityRegime.PARTIAL_OTHER: "gravité partielle",
-    GravityRegime.EARTH: "gravité terrestre",
+    GravityRegime.MICRO: "microgravity", GravityRegime.LUNAR: "lunar gravity",
+    GravityRegime.MARTIAN: "Martian gravity", GravityRegime.PARTIAL_OTHER: "partial gravity",
+    GravityRegime.EARTH: "Earth gravity",
 }
 MAX_EVIDENCE = 10  # preuves listées ; les observations portent sur toutes les voisines
 
@@ -381,7 +381,7 @@ def assess(
     task : "classification" ou "regression".
     """
     if not context.computed:
-        raise ValueError(f"Le contexte {context.context_id!r} est une référence, non calculée.")
+        raise ValueError(f"Context {context.context_id!r} is a reference and is not computed.")
     if task not in ("classification", "regression"):
         raise ValueError("task doit valoir 'classification' ou 'regression'")
 
@@ -509,23 +509,23 @@ def _gaps(
     regime = x.gravity_regime
     regime_fr = REGIME_FR[regime]
     if status == "untested":
-        gaps.append(f"Aucune expérience en {regime_fr} pour cette question.")
+        gaps.append(f"No experiment in {regime_fr} for this question.")
     if regime in PARTIAL_REGIMES and status != "long":
-        msg = f"Aucune mesure de longue durée en {regime_fr}."
+        msg = f"No long-duration measurement in {regime_fr}."
         if regime == GravityRegime.LUNAR:
-            msg += " Première mesure sur la Lune attendue avec FM2 (fin 2026)."
+            msg += " First measurement on the Moon expected from FM2 (late 2026)."
         gaps.append(msg)
     missing = [f for f in ("o2_mole_fraction", "pressure_kpa") if getattr(x, f) is None]
     if missing:
-        names = {"o2_mole_fraction": "taux d'oxygène", "pressure_kpa": "pression"}
-        gaps.append(f"Atmosphère de l'habitat à définir ({', '.join(names[m] for m in missing)}).")
+        names = {"o2_mole_fraction": "oxygen level", "pressure_kpa": "pressure"}
+        gaps.append(f"Habitat atmosphere not yet defined ({', '.join(names[m] for m in missing)}).")
     if cov.kappa < settings.kappa_min:
-        gaps.append("Scénario hors de l'enveloppe des données : aucune expérience proche.")
+        gaps.append("Scenario outside the data envelope: no nearby experiment.")
     if n_sources == 1:
-        gaps.append("Une seule source : aucun recoupement indépendant.")
+        gaps.append("Single source: no independent cross-check.")
     if has_model and not model_info.shown:
         if cov.kappa < settings.kappa_min:
-            gaps.append("Prédiction masquée : le modèle extrapolerait hors des données.")
+            gaps.append("Prediction hidden: the model would extrapolate beyond the data.")
         else:
-            gaps.append("Le modèle ne bat pas la référence en validation : seules les expériences voisines sont montrées.")
+            gaps.append("The model does not beat the baseline in validation: only neighbouring experiments are shown.")
     return gaps

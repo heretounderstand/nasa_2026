@@ -12,15 +12,15 @@ export function generateStaticParams() {
 
 // L'URL (params) est lue sous <Suspense> : la navigation affiche aussitôt
 // le squelette partagé de la route, puis le contenu propre au lien.
-export default function Page({ params }: PageProps<"/priorites/[cid]">) {
+export default function Page({ params }: PageProps<"/priorities/[cid]">) {
   return (
-    <Suspense fallback={<p className="eyebrow">Chargement des priorités…</p>}>
+    <Suspense fallback={<p className="eyebrow">Loading priorities…</p>}>
       <PrioritesContent params={params} />
     </Suspense>
   );
 }
 
-async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, "params">) {
+async function PrioritesContent({ params }: Pick<PageProps<"/priorities/[cid]">, "params">) {
   const { cid } = await params;
   if (!COMPUTED_CONTEXTS.includes(cid as never)) notFound();
 
@@ -43,8 +43,8 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
   for (const a of D.answers) {
     if (a.context_id !== cid) continue;
     for (const g of a.gaps) {
-      if (/^Pas de modèle|^Le modèle|^Prédiction masquée/.test(g)) continue;
-      const key = g.replace(/\s*Première mesure.*$/, "");
+      if (/^No model|^The model|^Prediction hidden/.test(g)) continue;
+      const key = g.replace(/\s*First measurement.*$/, "");
       const e = gaps.get(key) ?? { text: g, scen: new Set<string>(), risk: 0 };
       e.scen.add(a.scenario_id);
       e.risk = Math.max(e.risk, scenarioById(a.scenario_id)!.risk_level);
@@ -57,11 +57,11 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
     <>
       <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-end", gap: 24 }}>
         <h1 className="hero">
-          Les angles morts. <span>Ce qu’il faut étudier en premier.</span>
+          The blind spots. <span>What to study first.</span>
         </h1>
-        <nav className="seg" aria-label="Contexte de mission">
+        <nav className="seg" aria-label="Mission context">
           {COMPUTED_CONTEXTS.map((k) => (
-            <Link key={k} href={`/priorites/${k}`} aria-current={k === cid ? "true" : undefined} scroll={false}>
+            <Link key={k} href={`/priorities/${k}`} aria-current={k === cid ? "true" : undefined} scroll={false}>
               {contextById(k)!.label.toUpperCase()}
             </Link>
           ))}
@@ -69,20 +69,20 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
       </div>
 
       <div className="row">
-        <section className="grow stack" aria-label="Matrice risque et connaissance" style={{ gap: 10 }}>
+        <section className="grow stack" aria-label="Risk and knowledge matrix" style={{ gap: 10 }}>
           <PriorityMatrix dots={dots} cid={cid} />
           <div className="mono small muted" style={{ display: "flex", justifyContent: "space-between" }}>
-            <span>← OBSCURITÉ</span>
-            <span>CONNAISSANCE (confiance du moteur)</span>
-            <span>LUMIÈRE →</span>
+            <span>← DARKNESS</span>
+            <span>KNOWLEDGE (engine confidence)</span>
+            <span>LIGHT →</span>
           </div>
           <span className="small muted">
-            Axe vertical : niveau de risque du scénario (proposition de l’équipe). Axe horizontal : confiance calculée par le moteur.
+            Vertical axis: the scenario’s risk level (set by the team). Horizontal axis: confidence computed by the engine.
           </span>
         </section>
-        <section className="side stack" aria-label="Classement">
+        <section className="side stack" aria-label="Ranking">
           <div className="eyebrow" style={{ paddingBottom: 10 }}>
-            Classement · risque × obscurité
+            Ranking · risk × darkness
           </div>
           {rows.map((p, i) => (
             <Link key={p.scenario_id} className="rank-row" href={`/scenario/${p.scenario_id}/${cid}`}>
@@ -90,8 +90,8 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
               <span className="stack" style={{ gap: 4, minWidth: 0 }}>
                 <span style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.3 }}>{scenarioById(p.scenario_id)!.title}</span>
                 <span className="small muted">
-                  Risque {RISK_WORD[p.risk_level]} · confiance {CONF_WORD[p.confidence].toLowerCase()}
-                  {p.blind_spot ? " · angle mort" : ""}
+                  {RISK_WORD[p.risk_level]} risk · {CONF_WORD[p.confidence].toLowerCase()} confidence
+                  {p.blind_spot ? " · blind spot" : ""}
                 </span>
               </span>
             </Link>
@@ -99,11 +99,11 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
         </section>
       </div>
 
-      <section aria-label="Quoi étudier ensuite" className="stack" style={{ gap: 4 }}>
+      <section aria-label="What to study next" className="stack" style={{ gap: 4 }}>
         <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingBottom: 12 }}>
-          <h2 className="section">Quoi étudier ensuite</h2>
+          <h2 className="section">What to study next</h2>
           <span className="small muted">
-            Manques relevés par le moteur pour ce contexte, classés par nombre de scénarios qu’une nouvelle expérience éclairerait.
+            Gaps the engine found for this context, ranked by how many scenarios a new experiment would shed light on.
           </span>
         </div>
         {studies.map((g, i) => (
@@ -113,7 +113,7 @@ async function PrioritesContent({ params }: Pick<PageProps<"/priorites/[cid]">, 
             <span className="stack" style={{ gap: 6, alignItems: "flex-end" }}>
               <Lumens level={g.scen.size} total={6} />
               <span className="mono small muted">
-                {g.scen.size} scénario{g.scen.size > 1 ? "s" : ""} éclairé{g.scen.size > 1 ? "s" : ""}
+                {g.scen.size} scenario{g.scen.size > 1 ? "s" : ""} lit
               </span>
             </span>
           </div>

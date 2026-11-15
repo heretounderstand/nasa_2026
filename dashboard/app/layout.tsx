@@ -11,15 +11,15 @@ const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Flame in Freefall",
   description:
-    "Ce que disent les données NASA de combustion en microgravité, avec quel niveau de confiance, et quelle expérience manque.",
+    "What NASA's microgravity combustion data say about fire in space, how confident we can be, and which experiment is missing.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${archivo.variable} ${mono.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
       <body>
         <a className="skip" href="#main">
-          Aller au contenu
+          Skip to content
         </a>
         <Header
           labels={{
@@ -33,8 +33,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="wrap foot">
           <p>{D.disclaimer}</p>
           <p>
-            Données : NASA Physical Sciences Informatics (psi.nasa.gov) et rapports NTRS. Chaque valeur renvoie à son fichier,
-            sa ligne ou sa page. <Link href="/sources">Sources</Link>
+            Data: NASA Physical Sciences Informatics (psi.nasa.gov) and NTRS reports. Every value traces back to its file,
+            row or page. <Link href="/sources">Sources</Link>
           </p>
         </footer>
       </body>

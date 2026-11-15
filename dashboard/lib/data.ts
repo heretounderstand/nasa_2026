@@ -2,9 +2,9 @@
 // `python -m engine.pipeline`). Rien n'est calculé ici à partir de rien.
 import raw from "@/data/dashboard.json";
 
-export type ContextId = "terre" | "iss" | "gateway" | "lune" | "mars";
+export type ContextId = "earth" | "iss" | "gateway" | "moon" | "mars";
 export type ScenarioId = "s1" | "s2" | "s3" | "s4" | "s5" | "s6";
-export type Confidence = "tres_faible" | "faible" | "moyenne" | "elevee";
+export type Confidence = "very_low" | "low" | "medium" | "high";
 
 export interface Conditions {
   gravity_g: number | null;
@@ -33,8 +33,8 @@ export interface Answer {
   context_id: ContextId;
   prediction: string | number | null;
   confidence: Confidence;
-  evidence_axis: "limitees" | "moyennes" | "solides";
-  agreement_axis: "faible" | "moyen" | "eleve";
+  evidence_axis: "limited" | "medium" | "robust";
+  agreement_axis: "low" | "medium" | "high";
   components: {
     coverage: number;
     gravity_regime: string;
@@ -143,9 +143,9 @@ export interface Dashboard {
 
 export const D = raw as unknown as Dashboard;
 
-export const CONTEXT_ORDER: ContextId[] = ["terre", "iss", "gateway", "lune", "mars"];
-export const COMPUTED_CONTEXTS: ContextId[] = ["iss", "gateway", "lune", "mars"];
-export const CONFIDENCE_ORDER: Confidence[] = ["tres_faible", "faible", "moyenne", "elevee"];
+export const CONTEXT_ORDER: ContextId[] = ["earth", "iss", "gateway", "moon", "mars"];
+export const COMPUTED_CONTEXTS: ContextId[] = ["iss", "gateway", "moon", "mars"];
+export const CONFIDENCE_ORDER: Confidence[] = ["very_low", "low", "medium", "high"];
 
 export const contextById = (id: string) => D.contexts.find((c) => c.context_id === id);
 export const scenarioById = (id: string) => D.scenarios.find((s) => s.scenario_id === id);

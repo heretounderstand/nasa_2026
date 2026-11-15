@@ -35,15 +35,15 @@ export function Flame({ ctx, caption }: { ctx: string; caption: string }) {
   const shape =
     ctx === "iss" || ctx === "gateway" ? (
       <div className="fl-micro" />
-    ) : ctx === "terre" ? (
+    ) : ctx === "earth" ? (
       <div className="fl-earth"><i /></div>
-    ) : ctx === "lune" ? (
+    ) : ctx === "moon" ? (
       <div className="fl-moon"><i /></div>
     ) : (
       <div className="fl-mars">?</div>
     );
   return (
-    <aside className="side flame-box" aria-label="Comportement de la flamme">
+    <aside className="side flame-box" aria-label="Flame behaviour">
       <div className="flame-stage">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -58,7 +58,7 @@ export function Flame({ ctx, caption }: { ctx: string; caption: string }) {
         </AnimatePresence>
       </div>
       <div className="flame-cap">
-        <span className="eyebrow">Ce que montrent les essais</span>
+        <span className="eyebrow">What the tests show</span>
         <span>{caption}</span>
       </div>
     </aside>
@@ -82,7 +82,7 @@ export function Explanation({ sid, cid, facts }: { sid: string; cid: string; fac
     })
       .then((r) => r.json())
       .then((r) => alive && setResult({ key, text: r.text ?? null, via: r.via }))
-      .catch(() => alive && setResult({ key, text: null, via: "règles" }));
+      .catch(() => alive && setResult({ key, text: null, via: "rules" }));
     return () => {
       alive = false;
     };
@@ -100,14 +100,14 @@ export function Explanation({ sid, cid, facts }: { sid: string; cid: string; fac
         <span className={`via ${useAi ? "ai" : ""}`}>
           <i />
           {ai == null
-            ? "RÉDACTION EN COURS…"
+            ? "WRITING…"
             : useAi
-              ? "RÉDIGÉ PAR GEMINI À PARTIR DES FAITS DU MOTEUR, CHIFFRES VÉRIFIÉS"
-              : "TEXTE RÉDIGÉ PAR RÈGLES À PARTIR DU MOTEUR"}
+              ? "WRITTEN BY GEMINI FROM THE ENGINE’S FACTS · NUMBERS CHECKED"
+              : "RULE-BASED TEXT FROM THE ENGINE"}
         </span>
         {useAi && (
           <button type="button" className="linkish" onClick={() => setShowFacts((v) => !v)} aria-expanded={showFacts}>
-            {showFacts ? "Masquer les faits" : "Voir les faits"}
+            {showFacts ? "Hide the facts" : "Show the facts"}
           </button>
         )}
       </div>

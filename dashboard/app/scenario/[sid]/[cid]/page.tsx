@@ -11,20 +11,20 @@ export function generateStaticParams() {
   return D.scenarios.flatMap((s) => CONTEXT_ORDER.map((c) => ({ sid: s.scenario_id, cid: c })));
 }
 
-// Légendes de la flamme : chaque phrase renvoie à sa source et à sa page.
+// Flame captions: each sentence cites its source and page.
 const CAPTION: Record<string, string> = {
-  terre: "À 1 g, l’air chaud monte et refroidit la flamme : elle vacille. Sur LUCI, la flamme du tissu SIBAL s’éteint environ 45 s plus tôt à 1 g qu’en gravité partielle (Ferkul 2025, p. 34).",
-  iss: "Microgravité : flamme sphérique et bleue. Sa survie dépend de la ventilation.",
-  gateway: "Microgravité, plus d’oxygène et moins de pression qu’à bord de l’ISS : une combinaison peu testée.",
-  lune: "Vol parabolique : le tissu SIBAL brûle de façon stable vers le bas pendant les 20 s de gravité lunaire, à 0,086 cm/s (Ferkul 2026, p. 21-22).",
-  mars: "Fils gainés : en gravité martienne, la limite de propagation sur âme NiCr remonte à 17-18 % d’O₂ (Konno 2023, fig. 2). Atmosphère d’habitat : inconnue.",
+  earth: "At 1 g, hot air rises and cools the flame, so it flickers. In the LUCI comparison, the SIBAL fabric flame went out about 45 s sooner at 1 g than in partial gravity (Ferkul 2025, p. 34).",
+  iss: "Microgravity: a blue, spherical flame. Whether it survives depends on ventilation.",
+  gateway: "Microgravity, with more oxygen and lower pressure than on the ISS: a combination with few tests.",
+  moon: "Parabolic flight: SIBAL fabric burned steadily downward for the full 20 s of lunar gravity, at 0.086 cm/s (Ferkul 2026, pp. 21-22).",
+  mars: "Insulated wires: in Martian gravity, the flame-spread limit on a NiCr core rises to 17-18% O₂ (Konno 2023, Fig. 2). Habitat atmosphere: unknown.",
 };
 
 // L'URL (params) est lue sous <Suspense> : la navigation affiche aussitôt
 // le squelette partagé de la route, puis le contenu propre au lien.
 export default function Page({ params }: PageProps<"/scenario/[sid]/[cid]">) {
   return (
-    <Suspense fallback={<p className="eyebrow">Chargement du scénario…</p>}>
+    <Suspense fallback={<p className="eyebrow">Loading scenario…</p>}>
       <ScenarioContent params={params} />
     </Suspense>
   );
@@ -45,15 +45,15 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
     return {
       id: k,
       label: cx.label,
-      step: cx.computed ? pad2(i) : "RÉF.",
+      step: cx.computed ? pad2(i) : "REF.",
       level: aa ? confidenceLevel(aa.confidence) : null,
-      aria: `${cx.label}, ${aa ? `confiance ${CONF_WORD[aa.confidence]}` : "référence"}`,
+      aria: `${cx.label}, ${aa ? `${CONF_WORD[aa.confidence]} confidence` : "reference"}`,
     };
   });
 
   return (
     <>
-      <nav className="tabs" aria-label="Scénarios">
+      <nav className="tabs" aria-label="Scenarios">
         {D.scenarios.map((s) => (
           <Link key={s.scenario_id} href={`/scenario/${s.scenario_id}/${cid}`} aria-current={s.scenario_id === sid ? "true" : undefined} scroll={false}>
             {s.title}
@@ -63,44 +63,44 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
 
       <div className="stack" style={{ gap: 14 }}>
         <div className="eyebrow">
-          Scénario {sid.toUpperCase()} · risque {RISK_WORD[sc.risk_level]}
+          Scenario {sid.toUpperCase()} · {RISK_WORD[sc.risk_level]} risk
         </div>
         <h1 className="hero">{sc.question}</h1>
         <div className="chips">
-          <span>g = {c.gravity_g === 0 ? "≈ 0 (microgravité)" : num(c.gravity_g)}</span>
+          <span>g = {c.gravity_g === 0 ? "≈ 0 (microgravity)" : num(c.gravity_g)}</span>
           <span>O₂ = {pct(c.o2_mole_fraction)}</span>
-          <span>P = {c.pressure_kpa == null ? "[à définir]" : `${num(c.pressure_kpa, 1)} kPa`}</span>
+          <span>P = {c.pressure_kpa == null ? "[to be defined]" : `${num(c.pressure_kpa, 1)} kPa`}</span>
           {sc.assumptions.map((h) => (
-            <span key={h} className="assume" title="Hypothèse du scénario, pas une donnée">
-              hypothèse : {h}
+            <span key={h} className="assume" title="A scenario assumption, not a data point">
+              assumption: {h}
             </span>
           ))}
         </div>
       </div>
 
-      <section aria-label="Contexte de mission" className="stack" style={{ gap: 12 }}>
-        <div className="eyebrow">Transporter le scénario · la descente de confiance</div>
+      <section aria-label="Mission context" className="stack" style={{ gap: 12 }}>
+        <div className="eyebrow">Move the scenario · watch confidence fall</div>
         <ContextStrip sid={sid} current={cid} items={strip} />
       </section>
 
       <div className="row" style={{ alignItems: "stretch" }}>
-        <section className="grow stack" aria-label="Réponse" style={{ gap: 24 }}>
+        <section className="grow stack" aria-label="Answer" style={{ gap: 24 }}>
           {ref || !a ? (
             <>
               <div className="level">
                 <Lumens level={4} variant="big" />
                 <div className="stack" style={{ gap: 4 }}>
-                  <span className="eyebrow">Cadre de certification</span>
-                  <span className="level-word">Référence</span>
+                  <span className="eyebrow">Certification framework</span>
+                  <span className="level-word">Reference</span>
                 </div>
               </div>
               <p className="answer">
-                C’est ici que les matériaux sont certifiés : NASA-STD-6001, test 1, à 1 g. Le matériau est exposé à une flamme ; il échoue
-                si la flamme dépasse 15 cm ou produit des débris enflammés.
+                This is where materials are certified: NASA-STD-6001, Test 1, at 1 g. The material is exposed to a flame; it fails if
+                the flame travels more than 15 cm or drops burning debris.
               </p>
               <p className="why">
-                Point de comparaison, non calculé par le moteur. Le corpus contient {D.experiments.filter((e) => e.gravity_regime === "earth").length}{" "}
-                essais à 1 g (essais au sol de Saffire-II et LUCI, références des articles), qui servent de base aux écarts mesurés ailleurs.
+                The point of comparison, not computed by the engine. The corpus holds {D.experiments.filter((e) => e.gravity_regime === "earth").length}{" "}
+                tests at 1 g (Saffire-II and LUCI ground tests, and the 1 g references in the papers), the baseline for the shifts measured elsewhere.
               </p>
             </>
           ) : (
@@ -108,29 +108,29 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
               <div className="level">
                 <Lumens level={confidenceLevel(a.confidence)} variant="big" />
                 <div className="stack" style={{ gap: 4 }}>
-                  <span className="eyebrow">Confiance</span>
+                  <span className="eyebrow">Confidence</span>
                   <span className="level-word">{CONF_WORD[a.confidence]}</span>
                 </div>
               </div>
               <Explanation sid={sid} cid={cid} facts={answerFacts(sc, a, ctx)} />
               <p className="why">{confidenceFacts(a).join(" ")}</p>
               {a.model.name && a.model.cv_score != null && (
-                <div className="model-card" aria-label="Modèle et score de référence">
+                <div className="model-card" aria-label="Model and baseline score">
                   <div>
-                    <span className="eyebrow">Modèle</span>
+                    <span className="eyebrow">Model</span>
                     <span>{a.model.name}</span>
                   </div>
                   <div>
-                    <span className="eyebrow">Score (CV groupée)</span>
+                    <span className="eyebrow">Score (grouped CV)</span>
                     <b>{num(a.model.cv_score, 3)}</b>
                   </div>
                   <div>
-                    <span className="eyebrow">Référence</span>
+                    <span className="eyebrow">Baseline</span>
                     <b className="muted">{num(a.model.baseline_score, 3)}</b>
                   </div>
                   <div>
-                    <span className="eyebrow">Prédiction</span>
-                    <span>{a.model.shown ? "affichée" : "masquée"}</span>
+                    <span className="eyebrow">Prediction</span>
+                    <span>{a.model.shown ? "shown" : "hidden"}</span>
                   </div>
                 </div>
               )}
@@ -143,34 +143,34 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
 
       {a && (
         <div className="row">
-          <section className="grow stack" aria-label="Preuves">
+          <section className="grow stack" aria-label="Evidence">
             <div className="eyebrow" style={{ paddingBottom: 10 }}>
-              Preuves, par pertinence
+              Evidence, by relevance
             </div>
-            {a.evidence.length === 0 && <p className="muted">Aucune expérience voisine.</p>}
+            {a.evidence.length === 0 && <p className="muted">No neighbouring experiment.</p>}
             {a.evidence.map((ev) => (
               <EvidenceItem key={ev.experiment_id} id={ev.experiment_id} src={ev.source_id} rank={ev.relevance_rank} />
             ))}
             {a.observations.n > a.evidence.length && (
               <p className="small muted">
-                {a.observations.n} expériences voisines au total, dont les {a.evidence.length} premières sont listées.
+                {a.observations.n} neighbouring experiments in total; the first {a.evidence.length} are listed.
               </p>
             )}
             <Link className="mono small" style={{ marginTop: 8, padding: "10px 0" }} href="/sources">
-              TOUTES LES SOURCES →
+              ALL SOURCES →
             </Link>
           </section>
-          <section className="side missing" aria-label="Ce qui manque">
+          <section className="side missing" aria-label="What is missing">
             <span className="eyebrow" style={{ color: "var(--fire)" }}>
-              Ce qui manque
+              What is missing
             </span>
             <ul>
-              {(a.gaps.length ? a.gaps : ["Rien de bloquant identifié par le moteur pour ce cas."]).map((g) => (
+              {(a.gaps.length ? a.gaps : ["The engine found no blocking gap for this case."]).map((g) => (
                 <li key={g}>{g}</li>
               ))}
             </ul>
-            <Link className="btn" href={`/priorites/${cid}`}>
-              Voir les priorités →
+            <Link className="btn" href={`/priorities/${cid}`}>
+              See the priorities →
             </Link>
           </section>
         </div>
@@ -182,22 +182,22 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
 function Decomposition({ a }: { a: NonNullable<ReturnType<typeof answerFor>> }) {
   const c = a.components;
   const rows: [string, string, number][] = [
-    ["Couverture des conditions (κ)", num(c.coverage), c.coverage >= 0.35 ? 4 : c.coverage >= 0.2 ? 3 : c.coverage >= 0.1 ? 2 : c.coverage > 0.01 ? 1 : 0],
-    [`Régime de gravité : ${GRAV_STATUS[c.gravity_regime] ?? c.gravity_regime}`, `γ = ${num(c.gravity_factor)}`, c.gravity_factor >= 1 ? 4 : c.gravity_factor >= 0.5 ? 2 : 1],
-    ["Qualité des sources", num(c.source_quality), Math.round(c.source_quality * 4)],
-    ["Nombre d’expériences voisines", String(c.n_neighbors), c.n_neighbors >= 10 ? 4 : c.n_neighbors >= 5 ? 3 : c.n_neighbors >= 3 ? 2 : c.n_neighbors >= 1 ? 1 : 0],
-    ["Accord entre voisines", num(c.agreement), Math.round(c.agreement * 4)],
+    ["Coverage of the conditions (κ)", num(c.coverage), c.coverage >= 0.35 ? 4 : c.coverage >= 0.2 ? 3 : c.coverage >= 0.1 ? 2 : c.coverage > 0.01 ? 1 : 0],
+    [`Gravity regime: ${GRAV_STATUS[c.gravity_regime] ?? c.gravity_regime}`, `γ = ${num(c.gravity_factor)}`, c.gravity_factor >= 1 ? 4 : c.gravity_factor >= 0.5 ? 2 : 1],
+    ["Source quality", num(c.source_quality), Math.round(c.source_quality * 4)],
+    ["Number of neighbouring experiments", String(c.n_neighbors), c.n_neighbors >= 10 ? 4 : c.n_neighbors >= 5 ? 3 : c.n_neighbors >= 3 ? 2 : c.n_neighbors >= 1 ? 1 : 0],
+    ["Agreement among neighbours", num(c.agreement), Math.round(c.agreement * 4)],
   ];
   return (
     <div>
       <div className="eyebrow" style={{ paddingBottom: 10 }}>
-        Décomposition
+        Breakdown
       </div>
       {rows.map(([label, val, lvl]) => (
         <div className="comp" key={label}>
           <span>{label}</span>
           <span className="val">{val}</span>
-          <Lumens level={lvl} variant="wide" label={`${label} : ${lvl} sur 4`} />
+          <Lumens level={lvl} variant="wide" label={`${label}: ${lvl} out of 4`} />
         </div>
       ))}
     </div>
@@ -208,7 +208,7 @@ function EvidenceItem({ id, src, rank }: { id: string; src: string; rank: number
   const det = D.evidence_details[id];
   const source = sourceById(src);
   const where = det
-    ? `${det.provenance_file}${det.provenance_page ? `, p. ${det.provenance_page}` : ""}${det.provenance_row ? `, ligne ${det.provenance_row}` : ""}`
+    ? `${det.provenance_file}${det.provenance_page ? `, p. ${det.provenance_page}` : ""}${det.provenance_row ? `, row ${det.provenance_row}` : ""}`
     : "";
   const meta = det
     ? [

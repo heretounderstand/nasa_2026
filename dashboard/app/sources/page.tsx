@@ -1,7 +1,7 @@
 import { D } from "@/lib/data";
 
-const KIND = { psi_dataset: "jeu PSI", article: "article", report: "rapport", standard: "norme", upcoming: "à venir" } as const;
-const ACCESS = { open: "libre", restricted: "restreint", pending: "en attente" } as const;
+const KIND = { psi_dataset: "PSI dataset", article: "paper", report: "report", standard: "standard", upcoming: "upcoming" } as const;
+const ACCESS = { open: "open", restricted: "restricted", pending: "pending" } as const;
 
 function References({ text }: { text: string }) {
   return (
@@ -25,7 +25,7 @@ export default function SourcesPage() {
   return (
     <>
       <h1 className="hero">
-        Sources. <span>D’où vient chaque valeur.</span>
+        Sources. <span>Where every value comes from.</span>
       </h1>
       <div className="table-scroll">
         <table className="src">
@@ -33,9 +33,9 @@ export default function SourcesPage() {
             <tr>
               <th>SOURCE</th>
               <th>TYPE</th>
-              <th>ACCÈS</th>
-              <th>ESSAIS</th>
-              <th>RÉFÉRENCE</th>
+              <th>ACCESS</th>
+              <th>TESTS</th>
+              <th>REFERENCE</th>
             </tr>
           </thead>
           <tbody>
@@ -57,8 +57,8 @@ export default function SourcesPage() {
         </table>
       </div>
       <p className="small muted">
-        Inaccessibles : MAPTIS (base de certification des matériaux) et les portails ACME et Saffire de NASA Glenn. Le bucket AWS Open
-        Data de PSI ne contient pas la combustion.
+        Not accessible: MAPTIS (the materials certification database) and NASA Glenn’s ACME and Saffire data portals. The PSI AWS
+        Open Data bucket does not include combustion.
       </p>
     </>
   );

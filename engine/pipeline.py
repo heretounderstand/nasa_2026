@@ -30,7 +30,6 @@ from engine.schema import Confidence
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "processed"
-WEB_DATA = ROOT / "web" / "data"
 NEXT_DATA = ROOT / "dashboard" / "data"
 
 CONF_RANK = {c: i for i, c in enumerate(
@@ -84,7 +83,7 @@ def run() -> dict:
             model, fit = fit_and_predict(d, q.task, q.model_features, x)
             ans = assess(scenario, ctx, d, q.task, model)
             if model is None:
-                ans.gaps.append(f"Pas de modèle : {fit.reason_no_model}.")
+                ans.gaps.append(f"No model: {fit.reason_no_model}.")
             fit_reports[f"{sdef.scenario_id}/{ctx.context_id}"] = fit.__dict__
             answers.append(ans)
 
@@ -114,7 +113,7 @@ def run() -> dict:
                      "o2_mole_fraction", "pressure_kpa", "flow_velocity_cm_s", "fuel", "outcome_type",
                      "is_measured", "provenance_file", "provenance_row", "provenance_page"]]
     dashboard = {
-        "disclaimer": "Outil d'exploration et de pédagogie, pas un outil de décision de vol.",
+        "disclaimer": "An exploration and teaching tool, not a flight-decision tool.",
         "contexts": [c.model_dump(mode="json") for c in CONTEXTS.values()],
         "questions": {k: v.__dict__ for k, v in QUESTIONS.items()},
         "scenarios": [{**s.__dict__, "assumptions": list(s.assumptions)} for s in SCENARIOS],
@@ -129,9 +128,6 @@ def run() -> dict:
     }
     text = json.dumps(dashboard, indent=1, ensure_ascii=False)
     (OUT / "dashboard.json").write_text(text, encoding="utf-8")
-    # Copie lisible par le front-end, y compris ouvert en file:// (pas de fetch).
-    WEB_DATA.mkdir(parents=True, exist_ok=True)
-    (WEB_DATA / "dashboard.js").write_text("window.DASHBOARD = " + text + ";\n", encoding="utf-8")
     # Application Next.js : lit le même JSON au rendu serveur.
     NEXT_DATA.mkdir(parents=True, exist_ok=True)
     (NEXT_DATA / "dashboard.json").write_text(text, encoding="utf-8")
@@ -153,7 +149,7 @@ def _limit_band(df: pd.DataFrame) -> dict:
         lo, hi = sorted((float(ext.max()), float(ok.min())))
         levels.append({"gravity_g": float(g), "low": lo, "high": hi})
     return {
-        "material": "PMMA (tige de 1/4 po, combustion ascendante)", "pressure_kpa": 57.6,
+        "material": "PMMA (1/4 in. rod, upward burning)", "pressure_kpa": 57.6,
         "source_id": "olson2024_pmma",
         "provenance": "articles/Ferkul-Lunar and Planetary Science Conf 2026 v2.pdf, p. 20",
         "flags": ["digitized_from_figure", "short_duration_drop"],

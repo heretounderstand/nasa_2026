@@ -64,7 +64,7 @@ def test_psi159_counts(sets):
 
 def test_flex_impossible_pressure_skipped(frame):
     _, report = frame
-    assert any("pression ambiante impossible" in r for r in report["PSI-69"]["reasons"])
+    assert any("impossible ambient pressure" in r for r in report["PSI-69"]["reasons"])
 
 
 def test_saffire_ground_rows_have_no_orbit_o2(frame):
@@ -101,14 +101,14 @@ def test_pipeline_outputs(tmp_path, monkeypatch):
     dash = pipeline.run()
     answers = json.loads((tmp_path / "answers.json").read_text(encoding="utf-8"))
     assert len(answers) == 6 * 4  # la Terre est une référence, non calculée
-    assert {a["context_id"] for a in answers} == {"iss", "gateway", "lune", "mars"}
+    assert {a["context_id"] for a in answers} == {"iss", "gateway", "moon", "mars"}
     for a in answers:
         assert "%" not in a["confidence"]
         if a["prediction"] is not None:
             assert a["model"]["shown"]
             assert a["model"]["cv_score"] is not None and a["model"]["baseline_score"] is not None
         # Gravité partielle sans mesure longue durée : au mieux « faible »
-        if a["context_id"] in ("lune", "mars"):
-            assert a["confidence"] in ("tres_faible", "faible")
-    assert "terre" not in {p["context_id"] for p in dash["priorities"]}
+        if a["context_id"] in ("moon", "mars"):
+            assert a["confidence"] in ("very_low", "low")
+    assert "earth" not in {p["context_id"] for p in dash["priorities"]}
     pd.read_csv(tmp_path / "experiments.csv")

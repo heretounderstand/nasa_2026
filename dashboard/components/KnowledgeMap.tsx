@@ -30,9 +30,9 @@ export interface MapMarker {
 type Proj = "gravity" | "pressure" | "flow";
 
 const PROJ: Record<Proj, { label: string; key: "g" | "p" | "flow"; min: number; max: number; ticks: [number, string][]; axis: string }> = {
-  gravity: { label: "O₂ × GRAVITÉ", key: "g", min: 0, max: 1, ticks: [[0, "0 g"], [0.5, "0,5 g"], [1, "1 g"]], axis: "GRAVITÉ" },
-  pressure: { label: "O₂ × PRESSION", key: "p", min: 0, max: 520, ticks: [[0, "0"], [101.3, "101 kPa"], [260, "260"], [520, "520 kPa"]], axis: "PRESSION (kPa)" },
-  flow: { label: "O₂ × ÉCOULEMENT", key: "flow", min: 0, max: 40, ticks: [[0, "0"], [20, "20"], [40, "40 cm/s"]], axis: "ÉCOULEMENT (cm/s)" },
+  gravity: { label: "O₂ × GRAVITY", key: "g", min: 0, max: 1, ticks: [[0, "0 g"], [0.5, "0.5 g"], [1, "1 g"]], axis: "GRAVITY" },
+  pressure: { label: "O₂ × PRESSURE", key: "p", min: 0, max: 520, ticks: [[0, "0"], [101.3, "101 kPa"], [260, "260"], [520, "520 kPa"]], axis: "PRESSURE (kPa)" },
+  flow: { label: "O₂ × FLOW", key: "flow", min: 0, max: 40, ticks: [[0, "0"], [20, "20"], [40, "40 cm/s"]], axis: "FLOW (cm/s)" },
 };
 const O2MIN = 0.1, O2MAX = 0.4;
 
@@ -43,14 +43,14 @@ const GEOM = {
 };
 type Geom = (typeof GEOM)["wide"];
 
-const fr = (x: number, d = 1) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(x);
+const fr = (x: number, d = 1) => new Intl.NumberFormat("en-US", { maximumFractionDigits: d }).format(x);
 const PLATFORM: Record<string, string> = {
-  iss: "ISS", drop_tower: "tour de chute", drop_tower_centrifuge: "tour de chute centrifugée",
-  parabolic_flight: "vol parabolique", suborbital_centrifuge: "fusée suborbitale", ground: "au sol", lunar_surface: "surface lunaire",
+  iss: "ISS", drop_tower: "drop tower", drop_tower_centrifuge: "drop tower with centrifuge",
+  parabolic_flight: "parabolic flight", suborbital_centrifuge: "suborbital rocket", ground: "ground", lunar_surface: "lunar surface",
 };
 const OUTCOME: Record<string, string> = {
-  extinction: "s'éteint", sustained: "flamme entretenue", descriptive: "conditions seulement",
-  limit_o2: "limite d'O₂", detector_signal: "fumée mesurée", spread_rate: "vitesse de propagation",
+  extinction: "went out", sustained: "sustained flame", descriptive: "conditions only",
+  limit_o2: "O₂ limit", detector_signal: "smoke measured", spread_rate: "spread rate",
 };
 
 function jitter(id: string, amp: number) {
@@ -108,9 +108,9 @@ export default function KnowledgeMap({
   );
   const nVisible = placed.filter((d) => d.visible).length;
   const layerDefs: [keyof typeof layers, string, string][] = [
-    ["pts", "Expériences", "#EDEBE6"],
-    ["cov", "Couverture", "#CFE8FF"],
-    ["lim", "Limite d'inflammabilité", "#FF7A2F"],
+    ["pts", "Experiments", "#EDEBE6"],
+    ["cov", "Coverage", "#CFE8FF"],
+    ["lim", "Flammability limit", "#FF7A2F"],
   ];
   const L = band.levels;
   const minLevel = L.reduce((m, l) => (l.low < m.low ? l : m), L[0]);
@@ -125,7 +125,7 @@ export default function KnowledgeMap({
   }
 
   return (
-    <section aria-label="Carte de la connaissance" className="stack" style={{ gap: 14 }}>
+    <section aria-label="Knowledge map" className="stack" style={{ gap: 14 }}>
       <div className="row" style={{ justifyContent: "space-between", gap: 12, alignItems: "center" }}>
         <div className="seg" role="group" aria-label="Projection">
           {(Object.keys(PROJ) as Proj[]).map((k) => (
@@ -134,7 +134,7 @@ export default function KnowledgeMap({
             </button>
           ))}
         </div>
-        <div className="seg" role="group" aria-label="Couches">
+        <div className="seg" role="group" aria-label="Layers">
           {layerDefs.map(([k, label, color]) => (
             <button
               key={k}
@@ -155,7 +155,7 @@ export default function KnowledgeMap({
           viewBox={`0 0 ${G.W} ${G.H}`}
           className={compact ? undefined : "wide"}
           role="img"
-          aria-label={`${nVisible} expériences placées selon ${P.axis.toLowerCase()} et le taux d'oxygène`}
+          aria-label={`${nVisible} experiments plotted by ${P.axis.toLowerCase()} and oxygen level`}
           onClick={(e) => e.target === e.currentTarget && setTip(null)}
         >
           <defs>
@@ -178,7 +178,7 @@ export default function KnowledgeMap({
           </g>
           <g fontFamily="var(--mono)" fontSize="12" fill="#98A0AA">
             {[0.1, 0.2, 0.3, 0.4].map((o) => (
-              <text key={o} x={G.yLabelX} y={sy(o) + 4} textAnchor="end">{`${o * 100} %`}</text>
+              <text key={o} x={G.yLabelX} y={sy(o) + 4} textAnchor="end">{`${o * 100}%`}</text>
             ))}
             {P.ticks
               .filter(([, t]) => !compact || t !== "260")
@@ -186,7 +186,7 @@ export default function KnowledgeMap({
                 <text key={t} x={sx(v)} y={G.tickY} textAnchor={compact && i === arr.length - 1 ? "end" : "middle"}>{t}</text>
               ))}
             <text x={(G.X0 + G.X1) / 2} y={G.axisY} textAnchor="middle" fill="#EDEBE6">{P.axis}</text>
-            <text x={G.oxyX} y={(G.Y0 + G.Y1) / 2} textAnchor="middle" fill="#EDEBE6" transform={`rotate(-90 ${G.oxyX} ${(G.Y0 + G.Y1) / 2})`}>OXYGÈNE</text>
+            <text x={G.oxyX} y={(G.Y0 + G.Y1) / 2} textAnchor="middle" fill="#EDEBE6" transform={`rotate(-90 ${G.oxyX} ${(G.Y0 + G.Y1) / 2})`}>OXYGEN</text>
           </g>
 
           <AnimatePresence>
@@ -197,12 +197,12 @@ export default function KnowledgeMap({
                   <line x1={sx(0.38)} x2={sx(0.38)} y1={G.Y0} y2={G.Y1} />
                 </g>
                 <g fontFamily="var(--mono)" fontSize="12" fill="#EDEBE6">
-                  <text x={sx(0.165) + 6} y={G.Y0 + 18}>{compact ? "LUNE" : "LUNE 0,16 g"}</text>
-                  <text x={sx(0.38) + 6} y={G.Y0 + 18}>{compact ? "MARS" : "MARS 0,38 g"}</text>
+                  <text x={sx(0.165) + 6} y={G.Y0 + 18}>{compact ? "MOON" : "MOON 0.16 g"}</text>
+                  <text x={sx(0.38) + 6} y={G.Y0 + 18}>{compact ? "MARS" : "MARS 0.38 g"}</text>
                 </g>
                 {/* En portrait, la note descend dans la zone vide pour ne pas croiser FM2. */}
-                <text x={sx(0.38) + 6} y={compact ? sy(0.31) : G.Y0 + 60} fill="#98A0AA" fontSize="13">Habitat martien :</text>
-                <text x={sx(0.38) + 6} y={(compact ? sy(0.31) : G.Y0 + 60) + 17} fill="#98A0AA" fontSize="13">atmosphère à définir</text>
+                <text x={sx(0.38) + 6} y={compact ? sy(0.31) : G.Y0 + 60} fill="#98A0AA" fontSize="13">Mars habitat:</text>
+                <text x={sx(0.38) + 6} y={(compact ? sy(0.31) : G.Y0 + 60) + 17} fill="#98A0AA" fontSize="13">atmosphere not defined</text>
                 {layers.lim && (
                   <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <polygon
@@ -215,8 +215,8 @@ export default function KnowledgeMap({
                       initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: "easeOut" }}
                     />
                     <g fontSize="13" fill="#FFB27A">
-                      <text x={sx(G.label)} y={sy(0.147) - 10}>combustion possible ↑</text>
-                      <text x={sx(G.label)} y={sy(0.137) + 22}>↓ extinction</text>
+                      <text x={sx(G.label)} y={sy(0.147) - 10}>can burn ↑</text>
+                      <text x={sx(G.label)} y={sy(0.137) + 22}>↓ goes out</text>
                     </g>
                     {!compact && <Inset band={band} points={points} box={{ bx: 590, by: 96, bw: 350, bh: 200 }} />}
                   </motion.g>
@@ -247,19 +247,19 @@ export default function KnowledgeMap({
               return (
                 <g key={u.id}>
                   <rect x={x - 6} y={y - 6} width={12} height={12} fill="none" stroke="#FF7A2F" strokeDasharray="2 2" transform={`rotate(45 ${x} ${y})`}>
-                    <title>{`${u.id} (à venir) · ${u.provenance}`}</title>
+                    <title>{`${u.id} (upcoming) · ${u.provenance}`}</title>
                   </rect>
-                  {i === 0 && <text x={x + 12} y={y + 4} fill="#FFB27A">FM2 · à venir</text>}
+                  {i === 0 && <text x={x + 12} y={y + 4} fill="#FFB27A">FM2 · upcoming</text>}
                 </g>
               );
             })}
             {markers.map((m) => {
               const xv = proj === "gravity" ? m.g : proj === "pressure" ? m.p : null;
               if (xv == null || m.o2 == null) return null;
-              const x = sx(xv), y = sy(m.o2), moon = m.id === "lune";
+              const x = sx(xv), y = sy(m.o2), moon = m.id === "moon";
               const right = x > G.X1 - 160, dx = xv === 0 ? G.zeroDx : 14;
-              const color = m.id === "terre" ? "#EDEBE6" : moon ? "#FF7A2F" : "#CFE8FF";
-              const label = compact && moon ? `Lune · ${fr(m.o2 * 100)} %` : `${m.label} · ${fr(m.o2 * 100)} %`;
+              const color = m.id === "earth" ? "#EDEBE6" : moon ? "#FF7A2F" : "#CFE8FF";
+              const label = compact && moon ? `Moon · ${fr(m.o2 * 100)}%` : `${m.label} · ${fr(m.o2 * 100)}%`;
               return (
                 <g key={m.id}>
                   {moon && <circle className="pg" cx={x} cy={y} r={10} fill="none" stroke="#FF7A2F" strokeWidth={2} style={{ transformOrigin: `${x}px ${y}px` }} />}
@@ -267,7 +267,7 @@ export default function KnowledgeMap({
                   <text x={right ? x - 14 : x + dx} y={y + 4} textAnchor={right ? "end" : "start"} fill={color} fontWeight={600} paintOrder="stroke" stroke="#07090C" strokeWidth={4}>
                     {label}
                   </text>
-                  {m.id === "terre" && <text x={x - 14} y={y + 20} textAnchor="end" fill="#98A0AA">référence : certification</text>}
+                  {m.id === "earth" && <text x={x - 14} y={y + 20} textAnchor="end" fill="#98A0AA">reference: certification</text>}
                 </g>
               );
             })}
@@ -276,7 +276,7 @@ export default function KnowledgeMap({
         {tip && (
           <div className="tip" style={{ left: Math.max(8, Math.min(tip.x + 14, tip.w - 250)), top: tip.y + 14 }}>
             <b>{sourceTitles[tip.p.src] ?? tip.p.src}</b>
-            {[PLATFORM[tip.p.platform] ?? tip.p.platform, tip.p.g != null ? `${fr(tip.p.g, 3)} g` : null, tip.p.o2 != null ? `O₂ ${fr(tip.p.o2 * 100)} %` : null, tip.p.p != null ? `${fr(tip.p.p)} kPa` : null]
+            {[PLATFORM[tip.p.platform] ?? tip.p.platform, tip.p.g != null ? `${fr(tip.p.g, 3)} g` : null, tip.p.o2 != null ? `O₂ ${fr(tip.p.o2 * 100)}%` : null, tip.p.p != null ? `${fr(tip.p.p)} kPa` : null]
               .filter(Boolean)
               .join(" · ")}
             <br />
@@ -288,18 +288,18 @@ export default function KnowledgeMap({
 
       {compact && showBand && (
         <div className="panel map">
-          <svg viewBox="0 0 400 290" role="img" aria-label="Agrandissement de la limite d'inflammabilité">
+          <svg viewBox="0 0 400 290" role="img" aria-label="Close-up of the flammability limit">
             <Inset band={band} points={points} box={{ bx: 58, by: 54, bw: 316, bh: 190 }} />
           </svg>
         </div>
       )}
 
       <p className="small muted" style={{ margin: 0 }}>
-        {nVisible} expériences placées (O₂ connu, entre 10 et 40 %), légèrement dispersées horizontalement pour la lisibilité.{" "}
-        {compact ? "Touchez un point pour sa provenance." : "Survolez un point pour sa provenance."}{" "}
+        {nVisible} experiments plotted (known O₂, between 10% and 40%), slightly spread horizontally for legibility.{" "}
+        {compact ? "Tap a point for its provenance." : "Hover over a point for its provenance."}{" "}
         {proj === "gravity"
-          ? `Bande orange : limite d'inflammabilité du ${band.material} à ${fr(band.pressure_kpa)} kPa, entre le dernier essai éteint et le premier essai stable à chaque niveau de gravité (valeurs lues sur la figure, essais de 5 s). Minimum vers ${fr(minLevel.gravity_g, 2)} g.`
-          : "Le marqueur martien n'apparaît pas : son atmosphère n'est pas définie."}
+          ? `Orange band: flammability limit of ${band.material} at ${fr(band.pressure_kpa)} kPa, between the highest-oxygen test that went out and the lowest-oxygen test that stayed lit at each gravity level (values read from the figure, 5 s tests). Minimum near ${fr(minLevel.gravity_g, 2)} g.`
+          : "The Mars marker is not shown: its atmosphere is not defined."}
       </p>
     </section>
   );
@@ -314,16 +314,16 @@ function Inset({ band, points, box }: { band: LimitBand; points: MapPoint[]; box
   const L = band.levels;
   const pts = points.filter((p) => p.src === band.source_id && p.g != null && p.o2 != null);
   return (
-    <g aria-label="Agrandissement de la limite d'inflammabilité">
+    <g aria-label="Close-up of the flammability limit">
       <rect x={bx - 44} y={by - 30} width={bw + 60} height={bh + 62} fill="#07090C" stroke="#1E252E" />
       <text x={bx - 34} y={by - 12} fontFamily="var(--mono)" fontSize="11" fill="#98A0AA">{`ZOOM · PMMA · ${fr(band.pressure_kpa)} kPa`}</text>
       {[0.13, 0.14, 0.15].map((o) => (
         <g key={o}>
           <line x1={bx} x2={bx + bw} y1={iy(o)} y2={iy(o)} stroke="#1E252E" />
-          <text x={bx - 6} y={iy(o) + 4} textAnchor="end" fontFamily="var(--mono)" fontSize="11" fill="#98A0AA">{`${Math.round(o * 100)} %`}</text>
+          <text x={bx - 6} y={iy(o) + 4} textAnchor="end" fontFamily="var(--mono)" fontSize="11" fill="#98A0AA">{`${Math.round(o * 100)}%`}</text>
         </g>
       ))}
-      {([[0, "0"], [0.165, "Lune"], [0.38, "Mars"], [1, "1 g"]] as [number, string][]).map(([g, t]) => (
+      {([[0, "0"], [0.165, "Moon"], [0.38, "Mars"], [1, "1 g"]] as [number, string][]).map(([g, t]) => (
         <text key={t} x={ix(g)} y={by + bh + 18} textAnchor={g === 1 ? "end" : "middle"} fontFamily="var(--mono)" fontSize="11" fill="#98A0AA">{t}</text>
       ))}
       <polygon
@@ -332,7 +332,7 @@ function Inset({ band, points, box }: { band: LimitBand; points: MapPoint[]; box
       />
       {pts.map((p, i) => {
         const x = ix(p.g!), y = iy(p.o2!);
-        const t = `${p.outcome === "sustained" ? "flamme stable" : "extinction"} · ${fr(p.g!, 2)} g · O₂ ${fr(p.o2! * 100, 2)} %`;
+        const t = `${p.outcome === "sustained" ? "steady flame" : "went out"} · ${fr(p.g!, 2)} g · O₂ ${fr(p.o2! * 100, 2)}%`;
         return (
           <g key={p.id} className="pop" style={{ animationDelay: `${0.1 + i * 0.02}s` }}>
             {p.outcome === "sustained" ? (
@@ -345,9 +345,9 @@ function Inset({ band, points, box }: { band: LimitBand; points: MapPoint[]; box
       })}
       <g fontSize="12">
         <circle cx={bx + bw - 160} cy={by - 15} r={4} fill="#CFE8FF" />
-        <text x={bx + bw - 152} y={by - 11} fill="#EDEBE6">stable</text>
+        <text x={bx + bw - 152} y={by - 11} fill="#EDEBE6">steady</text>
         <path d={`M${bx + bw - 102},${by - 19}l8,8m0,-8l-8,8`} stroke="#FF7A2F" strokeWidth={2} />
-        <text x={bx + bw - 88} y={by - 11} fill="#EDEBE6">éteinte</text>
+        <text x={bx + bw - 88} y={by - 11} fill="#EDEBE6">went out</text>
       </g>
     </g>
   );

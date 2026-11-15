@@ -84,11 +84,11 @@ for fuel, (psia, limits) in TABLE_I.items():
                    "material_family": "non_charring" if fuel == "Mylar G" else "charring"},
             outcome_type="limit_o2", outcome_value=round(o2 / 100, 4), outcome_unit="o2_mole_fraction",
             extinction_criterion=(
-                "1 g : NASA-STD-6001 test 1 modifié (ULOI ≈ 50 % de réussite ; MOC : extinction systématique)"
+                "1 g: modified NASA-STD-6001 Test 1 (ULOI: passes about half the time; MOC: consistently self-extinguishes)"
                 if level == "1g" else
-                "ULOI* : O2 minimal où la flamme survit à la chute (5,18 s) ; MOC* : O2 maximal où elle s'éteint"),
+                "ULOI*: lowest O2 at which the flame survives the 5.18 s drop; MOC*: highest O2 at which it goes out"),
             quality_flags=lv["quality_flags"],
-            notes=f"Tableau I : {kind} = {o2} % O2 à {psia} psia",
+            notes=f"Table I: {kind} = {o2}% O2 at {psia} psia",
         )
 
 # --------------------------------------------------------------------------- #
@@ -117,10 +117,10 @@ for pan, (wire, core, od, flow, locs) in PANELS.items():
             diluent="N2", fuel="LDPE", fuel_type="solid", geometry=f"wire_{core}_od{od}mm_downward",
             extra={"limit_kind": "LOC_boundary", "wire_core": core, "wire_outer_diameter_mm": od},
             outcome_type="limit_o2", outcome_value=round(loc / 100, 4), outcome_unit="o2_mole_fraction",
-            extinction_criterion="Limite de propagation de flamme (l'allumage est toujours obtenu, p. 4)",
+            extinction_criterion="Flame-spread limit (ignition is always achieved, p. 4)",
             quality_flags=["digitized_from_figure", "read_on_1pct_grid"]
             + (["ground_reference_test"] if g == 1.0 else ["parabolic_g_jitter"]),
-            notes=f"Fig. 2({pan}) {wire}, Vg = {int(flow * 10)} mm/s : LOC ≈ {loc} % O2",
+            notes=f"Fig. 2({pan}) {wire}, Vg = {int(flow * 10)} mm/s: LOC ≈ {loc}% O2",
         )
 
 # --------------------------------------------------------------------------- #
@@ -142,9 +142,9 @@ for i, (kind, g, o2) in enumerate(POINTS, 1):
         gravity_g=g, o2_mole_fraction=round(o2 / 100, 4), pressure_kpa=57.6, diluent="N2",
         fuel="PMMA", fuel_type="solid", geometry="rod_quarter_inch_upward",
         outcome_type="sustained" if kind == "steady" else "extinction",
-        extinction_criterion="Flamme stable ou éteinte pendant la chute (~5 s, critère non standard)",
+        extinction_criterion="Flame steady or extinguished during the drop (~5 s, non-standard criterion)",
         quality_flags=["digitized_from_figure", "short_duration_drop", "pressure_from_article_abstract"],
-        notes=f"« centrifuge {'steady flame' if kind == 'steady' else 'extinction'} » à g ≈ {g}, O2 ≈ {o2} %",
+        notes=f"'centrifuge {'steady flame' if kind == 'steady' else 'extinction'}' point at g ≈ {g}, O2 ≈ {o2}%",
     )
 
 # --------------------------------------------------------------------------- #
@@ -156,9 +156,9 @@ add(
     o2_mole_fraction=0.21, pressure_kpa=ATM, diluent="N2", fuel="SIBAL fabric", fuel_type="solid",
     geometry="fabric_5cm_downward", outcome_type="sustained", outcome_value=0.086,
     outcome_unit="cm_s_flame_base_spread",
-    extinction_criterion="Propagation stable vers le bas pendant les 20 s de l'essai (p. 21)",
+    extinction_criterion="Steady downward spread for the entire 20 s test (p. 21)",
     quality_flags=["parabolic_g_jitter"],
-    notes="Essai 2-29, SIBAL 5 cm, 21 % O2, 1 atm (p. 21) ; vitesse de base de flamme 0,086 cm/s (p. 22)",
+    notes="Test 2-29, 5 cm SIBAL, 21% O2, 1 atm (p. 21); flame base spread rate 0.086 cm/s (p. 22)",
 )
 add(
     experiment_id="FERKUL26-SIBAL-lunar-centrifuge", source_id="ferkul2026_lpsc", dataset="solid_burn",
@@ -166,7 +166,7 @@ add(
     gravity_g=0.165, o2_mole_fraction=0.21, pressure_kpa=ATM, diluent="N2", fuel="SIBAL fabric",
     fuel_type="solid", geometry="fabric_downward", outcome_type="sustained", outcome_value=0.11,
     outcome_unit="cm_s_flame_base_spread", quality_flags=["short_duration_drop"],
-    notes="Tour de chute avec centrifugeuse, propagation descendante : 0,11 cm/s (p. 22) ; air, 1 atm, 0,165 g (p. 13)",
+    notes="Drop test with centrifuge, downward burning: 0.11 cm/s (p. 22); air, 1 atm, 0.165 g (p. 13)",
 )
 
 # --------------------------------------------------------------------------- #
@@ -177,11 +177,11 @@ F = "articles/ASGSR 2025-LUCI-Ferkul-Presentation-v2-20250010653.pdf"
 LUCI_G = round((11 * 2 * math.pi / 60) ** 2 * 1.22 / 9.80665, 3)
 for fuel, geo, lunar, val, page, txt in [
     ("SIBAL fabric", "fabric_5cm_downward", True, 0.09, 33,
-     "vitesse de base de flamme 0,9 mm/s en gravité partielle (p. 33) ; propagation de plus d'une minute (p. 16)"),
+     "flame base spread rate 0.9 mm/s in partial gravity (p. 33); the flame spread for over a minute (p. 16)"),
     ("SIBAL fabric", "fabric_5cm_downward", False, 0.15, 33,
-     "vitesse de base de flamme 1,5 mm/s à 1 g (p. 33) ; extinction environ 45 s plus tôt qu'en gravité partielle (p. 34)"),
-    ("PMMA", "rod_4mm_upward", True, 0.15, 36, "vitesse de pointe de flamme 0,15 cm/s en gravité partielle (p. 36)"),
-    ("PMMA", "rod_4mm_upward", False, 0.40, 36, "vitesse de pointe de flamme 0,40 cm/s à 1 g (p. 36)"),
+     "flame base spread rate 1.5 mm/s at 1 g (p. 33); extinction about 45 s sooner than in partial gravity (p. 34)"),
+    ("PMMA", "rod_4mm_upward", True, 0.15, 36, "flame tip spread rate 0.15 cm/s in partial gravity (p. 36)"),
+    ("PMMA", "rod_4mm_upward", False, 0.40, 36, "flame tip spread rate 0.40 cm/s at 1 g (p. 36)"),
 ]:
     add(
         experiment_id=f"LUCI25-{fuel.split()[0]}-{'lunar' if lunar else '1g'}", source_id="ferkul2025_luci",

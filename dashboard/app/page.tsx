@@ -17,9 +17,9 @@ export default function CartePage() {
     p: e.pressure_kpa,
     flow: e.flow_velocity_cm_s,
     outcome: e.outcome_type,
-    where: `${e.experiment_id} · ${e.provenance_file}${e.provenance_page ? `, p. ${e.provenance_page}` : ""}${e.provenance_row ? `, ligne ${e.provenance_row}` : ""}`,
+    where: `${e.experiment_id} · ${e.provenance_file}${e.provenance_page ? `, p. ${e.provenance_page}` : ""}${e.provenance_row ? `, row ${e.provenance_row}` : ""}`,
   }));
-  const markers: MapMarker[] = ["terre", "iss", "gateway", "lune"].map((id) => {
+  const markers: MapMarker[] = ["earth", "iss", "gateway", "moon"].map((id) => {
     const c = D.contexts.find((x) => x.context_id === id)!;
     return { id, label: c.label, g: c.conditions.gravity_g, o2: c.conditions.o2_mole_fraction, p: c.conditions.pressure_kpa };
   });
@@ -33,49 +33,49 @@ export default function CartePage() {
   return (
     <>
       <h1 className="hero">
-        La connaissance est une lumière. <span>Voici où elle s’éteint.</span>
+        Knowledge is a light. <span>This is where it goes out.</span>
       </h1>
       <div className="row">
         <div className="grow">
           <KnowledgeMap points={points} markers={markers} upcoming={D.upcoming} band={D.limit_band} sourceTitles={sourceTitles} />
         </div>
         <aside className="side stack" style={{ gap: 28 }}>
-          <section aria-label="Lecture" className="stack" style={{ gap: 16 }}>
-            <div className="eyebrow">Lecture</div>
+          <section aria-label="Key readings" className="stack" style={{ gap: 16 }}>
+            <div className="eyebrow">Key readings</div>
             <div className="stat">
               <b>{microSources.size}</b>
-              <span>sources avec des mesures en microgravité. La colonne de gauche est éclairée.</span>
+              <span>sources with microgravity measurements. The left-hand column is lit.</span>
             </div>
             <div className="stat">
               <b>{partial.length}</b>
               <span>
-                essais en gravité partielle, issus de {partialSources.size} sources, tous en tour de chute, vol parabolique ou fusée :
-                de 5 s à environ 2,5 min. Entre 0 et 1 g, presque l’obscurité.
+                tests in partial gravity, from {partialSources.size} sources, all in a drop tower, a parabolic flight or a rocket:
+                from 5 s to about 2.5 min. Between 0 and 1 g, it is almost dark.
               </span>
             </div>
             <div className="stat">
               <b className="fire">↓</b>
               <span>
-                La limite d’inflammabilité du PMMA est au plus bas vers {num(minLevel.gravity_g)} g, près de la gravité lunaire : moins de
-                gravité ne veut pas dire moins de feu.
+                The flammability limit of PMMA is lowest near {num(minLevel.gravity_g)} g, close to lunar gravity: less gravity does
+                not mean less fire.
               </span>
             </div>
           </section>
-          <section aria-label="Scénarios" className="stack">
+          <section aria-label="Scenarios" className="stack">
             <div className="eyebrow" style={{ marginBottom: 8 }}>
-              Scénarios · habitat lunaire
+              Scenarios · lunar habitat
             </div>
             {D.scenarios.map((s) => {
-              const a = answerFor(s.scenario_id, "lune")!;
+              const a = answerFor(s.scenario_id, "moon")!;
               return (
-                <Link key={s.scenario_id} className="list-link" href={`/scenario/${s.scenario_id}/lune`}>
+                <Link key={s.scenario_id} className="list-link" href={`/scenario/${s.scenario_id}/moon`}>
                   <span>{s.title}</span>
-                  <Lumens level={confidenceLevel(a.confidence)} label={`Confiance ${CONF_WORD[a.confidence]}`} />
+                  <Lumens level={confidenceLevel(a.confidence)} label={`${CONF_WORD[a.confidence]} confidence`} />
                 </Link>
               );
             })}
             <Link className="mono small" style={{ marginTop: 16, padding: "10px 0" }} href="/sources">
-              SOURCES DE DONNÉES →
+              DATA SOURCES →
             </Link>
           </section>
         </aside>

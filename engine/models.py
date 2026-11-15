@@ -51,12 +51,12 @@ def _groups(X: pd.DataFrame) -> np.ndarray:
 def _candidates(task: str):
     if task == "classification":
         return {
-            "régression logistique": lambda: make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
-            "arbre de décision (profondeur 3)": lambda: DecisionTreeClassifier(max_depth=3, min_samples_leaf=5, random_state=0),
+            "logistic regression": lambda: make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
+            "decision tree (depth 3)": lambda: DecisionTreeClassifier(max_depth=3, min_samples_leaf=5, random_state=0),
         }
     return {
-        "régression ridge": lambda: make_pipeline(StandardScaler(), Ridge(alpha=1.0)),
-        "arbre de régression (profondeur 3)": lambda: DecisionTreeRegressor(max_depth=3, min_samples_leaf=5, random_state=0),
+        "ridge regression": lambda: make_pipeline(StandardScaler(), Ridge(alpha=1.0)),
+        "regression tree (depth 3)": lambda: DecisionTreeRegressor(max_depth=3, min_samples_leaf=5, random_state=0),
     }
 
 
@@ -74,20 +74,20 @@ def fit_and_predict(
     data = data.dropna()
     report = FitReport(feats, len(data), 0)
     if not feats:
-        report.reason_no_model = "aucune variable d'entrée commune au scénario et aux données"
+        report.reason_no_model = "no input variable shared by the scenario and the data"
         return None, report
     if len(data) < MIN_ROWS:
-        report.reason_no_model = f"trop peu d'essais ({len(data)} < {MIN_ROWS})"
+        report.reason_no_model = f"too few tests ({len(data)} < {MIN_ROWS})"
         return None, report
     y = data["target"].to_numpy()
     if task == "classification" and len(set(y)) < 2:
-        report.reason_no_model = "une seule classe observée"
+        report.reason_no_model = "only one class observed"
         return None, report
     X = data[feats]
     groups = _groups(X)
     report.n_groups = int(groups.max() + 1)
     if report.n_groups < MIN_GROUPS:
-        report.reason_no_model = f"trop peu de conditions distinctes ({report.n_groups})"
+        report.reason_no_model = f"too few distinct conditions ({report.n_groups})"
         return None, report
 
     cv = GroupKFold(n_splits=min(5, report.n_groups))

@@ -15,10 +15,10 @@ export default function PriorityMatrix({ dots, cid }: { dots: Dot[]; cid: string
       <div className="q-dark" />
       <div className="q-lit" />
       <span className="lab" style={{ left: 20, top: 16, color: "var(--fire)" }}>
-        ANGLE MORT · RISQUE ÉLEVÉ, PEU DE CONNAISSANCE
+        BLIND SPOT · HIGH RISK, LITTLE KNOWLEDGE
       </span>
       <span className="lab" style={{ right: 20, bottom: 16, color: "var(--light)" }}>
-        SOUS CONTRÔLE
+        UNDER CONTROL
       </span>
       {dots.map((d, i) => {
         const k = seen[d.risk] ?? 0;

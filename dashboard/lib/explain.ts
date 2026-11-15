@@ -1,8 +1,9 @@
-// Rédaction de la réponse à partir de la sortie du moteur.
-// 1. `facts()` : phrases construites par règles, chiffres tirés du JSON.
-//    C'est le texte affiché par défaut, et la seule matière donnée au LLM.
-// 2. `numbersAllowed()` : garde-fou. Un texte du LLM n'est accepté que si
-//    chacun de ses nombres figure déjà dans les faits.
+// Writing the answer from the engine's output.
+// 1. `answerFacts()` / `confidenceFacts()`: rule-built sentences whose figures
+//    come from the JSON. This is the default text, and the only material
+//    handed to the LLM.
+// 2. `numbersAllowed()`: guardrail. An LLM text is accepted only if every
+//    number in it already appears in the facts.
 import type { Answer, MissionContext, Scenario } from "./data";
 import { AGR_WORD, CEIL_WORD, CLASS_WORD, CONF_WORD, EVID_WORD, num, pct } from "./labels";
 
@@ -17,52 +18,51 @@ export function answerFacts(sc: Scenario, a: Answer, ctx: MissionContext): strin
   const out: string[] = [];
   if (a.prediction != null) {
     const p = typeof a.prediction === "string" ? CLASS_WORD[a.prediction] ?? a.prediction : fmtVal(qt, a.prediction);
-    out.push(`Modèle (${a.model.name}) : ${p}.`);
+    const what =
+      qt === "wire_limiting_oxygen" ? `flame spread stops below ${p} oxygen` : qt === "smoke_particle_size" ? `particle size ${p}` : p;
+    out.push(`Model (${a.model.name}): ${what}.`);
   }
   if (o.counts) {
     const total = Object.values(o.counts).reduce((s, v) => s + v, 0);
     const parts = Object.entries(o.counts)
       .sort((x, y) => y[1] - x[1])
-      .map(([k, v]) => `${v} « ${CLASS_WORD[k] ?? k} »`);
-    out.push(`Parmi les ${total} expériences les plus proches de ce cas : ${parts.join(", ")}.`);
+      .map(([k, v]) => `${v} “${CLASS_WORD[k] ?? k}”`);
+    out.push(`Of the ${total} experiments closest to this case: ${parts.join(", ")}.`);
   } else if (o.median != null && o.min != null && o.max != null) {
-    out.push(
-      `Les expériences les plus proches donnent ${fmtVal(qt, o.min)} à ${fmtVal(qt, o.max)} (médiane ${fmtVal(qt, o.median)}).`,
-    );
+    const what = qt === "wire_limiting_oxygen" ? "an oxygen limit for flame spread of" : qt === "smoke_particle_size" ? "particle sizes of" : "";
+    out.push(`The closest experiments give ${what} ${fmtVal(qt, o.min)} to ${fmtVal(qt, o.max)} (median ${fmtVal(qt, o.median)}).`.replace("  ", " "));
   }
   if (qt === "wire_limiting_oxygen" && ctx.conditions.o2_mole_fraction != null && o.max != null) {
     const above = ctx.conditions.o2_mole_fraction > o.max;
     out.push(
-      `L'oxygène de ce contexte (${pct(ctx.conditions.o2_mole_fraction)}) est ${above ? "au-dessus de" : "dans"} cette plage : ${
-        above ? "une flamme peut se propager le long du câble." : "la marge est incertaine."
+      `The oxygen level in this setting (${pct(ctx.conditions.o2_mole_fraction)}) is ${above ? "above" : "within"} that range: ${
+        above ? "a flame can spread along the wire." : "the margin is uncertain."
       }`,
     );
   }
   if (o.delta_o2_pts?.length) {
     const d = [...o.delta_o2_pts].sort((x, y) => x - y);
     out.push(
-      `Écart de limite d'oxygène par rapport au test à 1 g : de ${num(d[0])} à ${num(d[d.length - 1])} point(s) (négatif : brûle avec moins d'oxygène qu'à 1 g).`,
+      `Shift in the oxygen limit relative to the 1 g test: from ${num(d[0])} to ${num(d[d.length - 1])} point(s) (negative: burns with less oxygen than at 1 g).`,
     );
   }
   if (qt === "smoke_particle_size" && o.median != null) {
     out.push(
-      "Des particules de quelques dixièmes de micromètre sont mal vues par les détecteurs optiques réglés pour la fumée terrestre ; aucun déclenchement d'alarme n'est enregistré dans ces données.",
+      "Particles a few tenths of a micrometre across are poorly seen by optical detectors tuned for smoke on Earth; no alarm activation is recorded in these data.",
     );
   }
-  if (!o.n) out.push("Aucune expérience exploitable pour ce cas.");
+  if (!o.n) out.push("No usable experiment for this case.");
   return out;
 }
 
 export function confidenceFacts(a: Answer): string[] {
-  const out = [
-    `Confiance ${CONF_WORD[a.confidence].toLowerCase()} : preuves ${EVID_WORD[a.evidence_axis]}, accord ${AGR_WORD[a.agreement_axis]}.`,
-  ];
+  const out = [`${CONF_WORD[a.confidence]} confidence: ${EVID_WORD[a.evidence_axis]} evidence, ${AGR_WORD[a.agreement_axis]} agreement.`];
   const ceilings = a.ceilings_applied.map((k) => CEIL_WORD[k]).filter(Boolean);
-  if (ceilings.length) out.push(`Plafonds : ${ceilings.join(" ; ")}.`);
+  if (ceilings.length) out.push(`Ceilings: ${ceilings.join("; ")}.`);
   if (a.model.name && a.model.cv_score != null && a.model.baseline_score != null) {
     out.push(
-      `Modèle ${a.model.name} en validation croisée groupée : ${num(a.model.cv_score, 3)} contre ${num(a.model.baseline_score, 3)} pour la référence (${
-        a.model.shown ? "affiché" : "non affiché"
+      `Model ${a.model.name} in grouped cross-validation: ${num(a.model.cv_score, 3)} against ${num(a.model.baseline_score, 3)} for the baseline (${
+        a.model.shown ? "shown" : "not shown"
       }).`,
     );
   }
@@ -72,7 +72,7 @@ export function confidenceFacts(a: Answer): string[] {
 const NUM = /\d+(?:[.,]\d+)?/g;
 const norm = (t: string) => t.replace(",", ".").replace(/^0+(?=\d)/, "");
 
-/** Vrai si chaque nombre de `text` apparaît déjà dans `facts`. */
+/** True if every number in `text` already appears in `facts`. */
 export function numbersAllowed(text: string, facts: string): boolean {
   const allowed = new Set((facts.match(NUM) ?? []).map(norm));
   return (text.match(NUM) ?? []).every((n) => allowed.has(norm(n)));
