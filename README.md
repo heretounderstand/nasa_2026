@@ -69,6 +69,4 @@ BASS (PSI-26) test-log observations are quoted verbatim and never classified. Th
 | `dashboard/` | Next.js app; `app/api/` holds the two Gemini routes with guardrails |
 | `web/` | First static prototype (French, frozen on 9 October data) |
 
-Preparation before the hackathon and use of AI: see [docs/PREPARATION.md](docs/PREPARATION.md).
-
 An exploration and teaching tool, not a flight-decision tool.
