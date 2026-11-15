@@ -14,6 +14,7 @@ const VIEWS = [
   { href: "/", match: (p: string) => p === "/", label: "01 MAP" },
   { href: "/scenario/s6/moon", match: (p: string) => p.startsWith("/scenario"), label: "02 SCENARIO" },
   { href: "/priorities/moon", match: (p: string) => p.startsWith("/priorities"), label: "03 PRIORITIES" },
+  { href: "/investigations", match: (p: string) => p.startsWith("/investigations"), label: "04 INVESTIGATIONS" },
 ];
 
 export default function Header({ labels }: { labels: HeaderLabels }) {

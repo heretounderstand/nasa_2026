@@ -176,6 +176,7 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
           </section>
         </div>
       )}
+      <Incidents sid={sid} />
       {a && D.field_notes[sid] && <FieldNotesBlock sid={sid} />}
     </>
   );
@@ -205,6 +206,31 @@ function Comparison({ a, qt, highlight }: { a: NonNullable<ReturnType<typeof ans
         Observed values, not a prediction. The highlighted row is this scenario’s case.
       </p>
     </div>
+  );
+}
+
+function Incidents({ sid }: { sid: string }) {
+  const list = D.incidents.filter((i) => i.scenarios.includes(sid));
+  if (!list.length) return null;
+  return (
+    <section aria-label="Why it matters" className="stack" style={{ gap: 4 }}>
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingBottom: 12 }}>
+        <h2 className="section">Why it matters</h2>
+        <span className="small muted">Real spacecraft incidents related to this scenario, as described by NASA.</span>
+      </div>
+      {list.map((i) => (
+        <div className="study incident" key={i.id}>
+          <b>{i.year}</b>
+          <span className="stack" style={{ gap: 6 }}>
+            <span style={{ fontSize: 18, fontWeight: 600 }}>{i.name}</span>
+            <span style={{ fontSize: 15, lineHeight: 1.55, color: "var(--soft)" }}>{i.text}</span>
+            <a className="mono small" href={i.url} target="_blank" rel="noopener noreferrer">
+              {i.source} ↗
+            </a>
+          </span>
+        </div>
+      ))}
+    </section>
   );
 }
 

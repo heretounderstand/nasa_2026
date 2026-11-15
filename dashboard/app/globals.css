@@ -181,6 +181,25 @@ h2.section { margin: 0; font-stretch: 70%; font-weight: 700; font-size: 34px; }
 .study { display: grid; grid-template-columns: 56px minmax(0, 1fr) 190px; gap: 20px; align-items: center; padding: 18px 0; border-top: 1px solid var(--rule); }
 .study b { font-stretch: 70%; font-weight: 700; font-size: 30px; color: var(--light); }
 
+/* Investigations */
+.inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.inv { border: 1px solid var(--rule); background: var(--panel); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.inv.lit { border-color: var(--rule-2); box-shadow: 0 0 28px rgba(207, 232, 255, 0.05) inset; }
+.inv.dark { background: var(--bg); }
+.inv.dark h2, .inv.dark .inv-obj { color: var(--muted); }
+.inv-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.inv h2 { margin: 0; font-stretch: 75%; font-weight: 700; font-size: 24px; line-height: 1.1; }
+.inv-obj { margin: 0; font-size: 14px; line-height: 1.55; color: var(--soft); }
+.inv-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.inv-links { display: inline-flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 12px; }
+.inv-links a { padding: 4px 8px; border: 1px solid var(--rule-2); text-decoration: none; color: var(--text); }
+.inv-links a:hover { border-color: var(--fire); color: var(--fire-2); }
+.tag.lit { border-color: var(--light); color: var(--light); }
+.tag.dim { color: var(--soft); }
+.tag.dark { border-style: dashed; color: var(--muted); }
+.study.incident { grid-template-columns: 72px minmax(0, 1fr); align-items: start; }
+.study.incident b { color: var(--fire); font-size: 24px; }
+
 /* Sources */
 table.src { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.src th { text-align: left; font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--muted); font-weight: 400; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule-2); }

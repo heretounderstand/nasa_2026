@@ -13,11 +13,13 @@ Sorties dans data/processed/ :
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
 import pandas as pd
 
+from engine import catalog
 from engine.confidence import assess
 from engine.contexts import CONTEXTS, effective_conditions
 from engine.datasets import QUESTIONS, build, to_frame
@@ -128,6 +130,10 @@ def run() -> dict:
         "evidence_details": _evidence_details(df, answers),
         "limit_band": _limit_band(df),
         "field_notes": _field_notes(df),
+        "investigations": catalog.investigations(df),
+        "incidents": catalog.INCIDENTS,
+        "spinoffs": catalog.SPINOFFS,
+        "challenge_resources": catalog.CHALLENGE_RESOURCES,
     }
     text = json.dumps(dashboard, indent=1, ensure_ascii=False)
     (OUT / "dashboard.json").write_text(text, encoding="utf-8")
@@ -162,9 +168,11 @@ def _comparison(sdef, d: pd.DataFrame) -> dict:
 
 # Observations d'astronautes (BASS, PSI-26), reprises mot pour mot. Sélection
 # par règle simple et affichée : matériau ou mot-clé, dans l'ordre du fichier.
+_BURN_WORDS = re.compile(r"ignit|spread|extinguish|blow|quench", re.I)
 FIELD_NOTE_RULES = {
-    "s2": ("fabric samples (SIBAL, Nomex)",
-           lambda r: isinstance(r["fuel"], str) and any(k in r["fuel"].lower() for k in ("sibal", "nomex"))),
+    "s2": ("fabric samples (SIBAL, Nomex) whose note mentions ignition, spread or extinction",
+           lambda r: isinstance(r["fuel"], str) and any(k in r["fuel"].lower() for k in ("sibal", "nomex"))
+           and isinstance(r["notes"], str) and bool(_BURN_WORDS.search(r["notes"]))),
     "s7": ("notes mentioning nitrogen (N2) used to put the flame out",
            lambda r: isinstance(r["notes"], str) and "N2" in r["notes"]),
 }

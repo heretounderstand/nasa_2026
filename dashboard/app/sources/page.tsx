@@ -56,6 +56,31 @@ export default function SourcesPage() {
           </tbody>
         </table>
       </div>
+      <section aria-label="Official challenge resources" className="stack" style={{ gap: 12 }}>
+        <h2 className="section">Official challenge resources</h2>
+        <div className="table-scroll">
+          <table className="src">
+            <thead>
+              <tr>
+                <th>RESOURCE</th>
+                <th>HOW IT IS USED HERE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {D.challenge_resources.map((r) => (
+                <tr key={r.url}>
+                  <td>
+                    <a href={r.url} target="_blank" rel="noopener noreferrer">
+                      {r.title}
+                    </a>
+                  </td>
+                  <td>{r.use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <p className="small muted">
         Not accessible: MAPTIS (the materials certification database) and NASA Glenn’s ACME and Saffire data portals. The PSI AWS
         Open Data bucket does not include combustion.

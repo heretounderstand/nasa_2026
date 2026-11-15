@@ -173,3 +173,21 @@ def test_comparisons_and_field_notes(tmp_path, monkeypatch):
         assert 0 < len(fn["items"]) <= 6 <= fn["total"] or fn["total"] == len(fn["items"])
         assert all("row" in i["provenance"] for i in fn["items"])
 
+
+def test_catalog_covers_every_psi_combustion_investigation(frame):
+    from engine import catalog
+    from engine.scenarios import SCENARIOS_BY_ID
+    inv = catalog.investigations(frame[0])["items"]
+    assert len(inv) == 24
+    assert {i["accession"] for i in inv} == set(catalog.USAGE)
+    for i in inv:
+        assert set(i["scenarios"]) <= set(SCENARIOS_BY_ID)
+        # Une investigation qui alimente un scénario doit avoir des essais importés
+        # (PSI-102 : ses essais sont dans le classeur combiné de PSI-101).
+        if i["status"] == "scenario" and i["accession"] != "PSI-102":
+            assert i["n_imported"] > 0
+        if i["status"] == "not_used":
+            assert i["n_imported"] == 0
+    for item in catalog.INCIDENTS + catalog.SPINOFFS:
+        assert item["url"].startswith("https://") and set(item["scenarios"]) <= set(SCENARIOS_BY_ID)
+

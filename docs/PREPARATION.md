@@ -1,4 +1,4 @@
-# Preparation before the hackathon, and use of AI
+﻿# Preparation before the hackathon, and use of AI
 
 This document declares the work done on *Flame in Freefall* **before** the
 NASA Space Apps Challenge 2026 hackathon (14–15 November 2026), and how AI
@@ -62,7 +62,7 @@ The design phase used Claude on claude.ai.
 
 **AI inside the product:** the dashboard calls Google Gemini (model set in
 `GEMINI_MODEL`) for two tasks only:
-- routing a free-text question to one of the six scenarios and four contexts,
+- routing a free-text question to one of the seven scenarios and four contexts,
   chosen from a closed list (the model never answers the question itself);
 - rewriting, for a general audience, facts that the engine has already
   written by fixed rules.
@@ -74,11 +74,22 @@ rule-based text is shown instead, if it contains any number that is not
 already in the engine's facts or names a different confidence level. The
 interface labels which of the two texts is displayed.
 
-## What remains for the hackathon weekend
+## Work done during the hackathon weekend (14–15 November 2026)
 
-- Integrate the data released for the hackathon, and any new results (FM2).
-- Validate the scenarios' risk levels and assumptions with the team.
-- Pitch, video and submission.
+Done with Claude Code (model Claude Fable 5.2), directed by Adrien, starting
+from the preparation above and from the official challenge resources
+(`RESSOURCES.md`).
 
-The work done during the weekend will be listed here, separately from the
-preparation above.
+| What was done | Who |
+|---|---|
+| Whole product switched to English (engine texts, interface, Gemini prompts). | Claude Code, directed by Adrien |
+| Gemini tested end to end with the team's API key (`gemini-3.8-flash`). Next.js upgraded to 16.4.6. | Claude Code; key provided by Adrien |
+| Smoke scenario retargeted to the real ISS smoke detector signal recorded in the SAME / SAME-R workbook. | Claude Code, validated by Adrien |
+| New scenario on CO2 suppression from the FLEX tests (273 tests that were imported but unused). | Claude Code, validated by Adrien |
+| BASS test-log observations quoted verbatim in the fabric and extinguisher scenarios. No automatic classification. | Claude Code, validated by Adrien |
+| Neighbour search now uses the scenario's own variables (CO2 fraction, fuel flow). | Claude Code |
+| Investigations view: the 24 PSI combustion investigations, with what each studied and whether it is used. Metadata from the PSI public API. | Claude Code |
+| Real incidents (Apollo 1, Apollo 13, Mir 1997) and three NASA spinoffs. The six NASA pages were read by an AI agent that returned verbatim quotes; every sentence shown stays within those quotes. | Claude Code |
+
+Still to do by the team: validate the scenarios' risk levels and assumptions,
+pitch, video and submission.

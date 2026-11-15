@@ -253,9 +253,23 @@ PSI-69 FLEX : 273 essais (ligne 115 : pression 0 mmHg, écartée). PSI-10, PSI-2
 - `Answer.observations` : résultats observés chez les voisines (données, pas prédiction).
 - Niveaux de risque des scénarios : proposition à valider (s1, s2, s6 = 3 ; s3, s4, s5 = 2).
 
+### Week-end du hackathon (14-15 novembre 2026)
+
+Ressources officielles du challenge : `RESSOURCES.md` (PSI confirmé comme source ; pas de nouveau jeu de données).
+
+- **Tout le produit est en anglais** : textes du moteur, identifiants (`earth`, `moon` ; confiance `very_low` … `high` ; preuves `limited/medium/robust`), interface, routes (`/priorities`), consignes Gemini. Ce fichier reste en français (interne).
+- **Sept scénarios.** s5 vise désormais le **signal du détecteur de fumée de l'ISS** (V), feuille « Reduced Data with ISS Det » ; les valeurs ≥ 6,2 V sont signalées `at_signal_ceiling` (saturation probable, non confirmée par la source ; aucun seuil d'alarme dans les données). **s7** (nouveau) : extincteur au CO₂, données FLEX PSI-69, cible = diamètre d'extinction / diamètre initial (172 essais ; gouttes éclatées exclues).
+- **Comparaisons** (`observations.comparison`) : médiane par matériau (s5) ou par dose de CO₂ (s7), sur tout le jeu.
+- **Observations BASS** (PSI-26, matrice « as run », 124 comptes rendus) : citées mot pour mot (`field_notes`), jamais classées. Règles de sélection affichées.
+- **Couverture** : les variables propres à la question (`extra.*`) comptent dans le choix des voisines quand le scénario les renseigne.
+- **Catalogue** (`engine/catalog.py`, `data/manual/psi_catalog.json`) : usage des 24 investigations PSI, incidents (Apollo 1, Apollo 13, Mir), retombées, ressources officielles. Chaque phrase d'incident reste dans les citations des pages NASA.
+- **Vue Investigations** (`/investigations`) ajoutée à la navigation.
+- Next.js 16.4.6 ; Gemini `gemini-3.8-flash` testé avec la vraie clé.
+- `web/` (prototype statique) figé : plus régénéré par le pipeline.
+- 67 tests.
+
 ### Reste à faire
 
-- Tester Gemini avec la vraie clé (`npm run gemini:check`) ; garde-fous : nombres vérifiés contre les faits du moteur, repli sur le texte par règles.
 - Valider les niveaux de risque et les hypothèses de scénario avec l'équipe.
 - Intégrer FM2 dès publication (`data/manual/build_partial_gravity.py`).
 

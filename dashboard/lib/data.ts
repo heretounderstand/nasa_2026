@@ -135,6 +135,35 @@ export interface FieldNotes {
   source_id: string;
   items: { experiment_id: string; material: string; o2_mole_fraction: number | null; pressure_kpa: number | null; text: string; provenance: string }[];
 }
+export interface Investigation {
+  accession: string;
+  name: string;
+  title: string;
+  platform: string | null;
+  sub_area: string | null;
+  objective: string | null;
+  url: string;
+  status: "scenario" | "notes" | "map" | "not_used";
+  scenarios: string[];
+  note: string;
+  n_imported: number;
+}
+export interface Incident {
+  id: string;
+  name: string;
+  year: number;
+  scenarios: string[];
+  text: string;
+  source: string;
+  url: string;
+}
+export interface Spinoff {
+  name: string;
+  year: number;
+  scenarios: string[];
+  text: string;
+  url: string;
+}
 export interface Dashboard {
   disclaimer: string;
   contexts: MissionContext[];
@@ -147,6 +176,10 @@ export interface Dashboard {
   evidence_details: Record<string, EvidenceDetail>;
   limit_band: LimitBand;
   field_notes: Record<string, FieldNotes>;
+  investigations: { fetched: string; items: Investigation[] };
+  incidents: Incident[];
+  spinoffs: Spinoff[];
+  challenge_resources: { title: string; url: string; use: string }[];
 }
 
 export const D = raw as unknown as Dashboard;
