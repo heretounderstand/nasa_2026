@@ -1,4 +1,4 @@
-﻿# Preparation before the hackathon, and use of AI
+# Preparation before the hackathon, and use of AI
 
 This document declares the work done on *Flame in Freefall* **before** the
 NASA Space Apps Challenge 2026 hackathon (14–15 November 2026), and how AI
