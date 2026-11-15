@@ -356,3 +356,14 @@ details.fold.slim[open] > summary { margin-bottom: 10px; }
   .top { backdrop-filter: none; background: var(--bg); }
   .ctx-strip { mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
 }
+
+/* Investigations: view switch and "show all" */
+.view-switch button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+.more { align-self: center; margin: -12px auto 0; padding: 12px 22px; border-radius: 999px; border: 1px solid var(--rule-2); background: var(--panel); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; }
+.more:hover { border-color: var(--fire); color: var(--fire-2); }
+@media (max-width: 720px) {
+  /* Phone: keep the comparison to what fits, the rest scrolls sideways */
+  .cmp-table th:nth-child(4), .cmp-table td:nth-child(4) { display: none; }
+  .cmp-table td, .cmp-table th { padding-right: 14px; font-size: 13px; }
+  .cmp-table td:nth-child(2) { position: sticky; left: 0; background: var(--bg); min-width: 110px; }
+}

@@ -44,10 +44,14 @@ export default function InvestigationExplorer({
 }) {
   const [habitat, setHabitat] = useState("moon");
   const [pillar, setPillar] = useState<string>("all");
+  const [view, setView] = useState<"cards" | "table">("cards");
+  const [all, setAll] = useState(false);
   const byAcc = Object.fromEntries(items.map((i) => [i.accession, i]));
   const h = rankings.find((r) => r.id === habitat)!;
   const rankOf = Object.fromEntries(h.ranking.map((r, i) => [r.accession, { ...r, rank: i + 1 }]));
   const shown = h.ranking.map((r) => byAcc[r.accession]).filter((i) => pillar === "all" || i.profile.pillar === pillar);
+  const FIRST = 6;
+  const cards = all ? shown : shown.slice(0, FIRST);
 
   return (
     <>
@@ -78,6 +82,14 @@ export default function InvestigationExplorer({
           {h.label}: {h.gravity_g === 0 ? "microgravity" : `${(h.gravity_g ?? 0).toFixed(2)} g`},{" "}
           {h.o2_percent == null ? "atmosphere not defined" : `${fmt(h.o2_percent)}% oxygen, ${fmt(h.pressure_kpa ?? 0)} kPa`}.
         </p>
+        <div className="seg view-switch" role="group" aria-label="View">
+          <button type="button" aria-pressed={view === "cards"} onClick={() => setView("cards")}>
+            CARDS
+          </button>
+          <button type="button" aria-pressed={view === "table"} onClick={() => setView("table")}>
+            COMPARE SIDE BY SIDE
+          </button>
+        </div>
         <details className="fold slim" style={{ maxWidth: 980 }}>
           <summary>How the relevance score works</summary>
           <p className="small muted" style={{ margin: 0 }}>
@@ -89,8 +101,9 @@ export default function InvestigationExplorer({
         </details>
       </section>
 
+      {view === "cards" && (
       <section aria-label="PSI combustion investigations" className="inv-grid">
-        {shown.map((i) => {
+        {cards.map((i) => {
           const st = STATUS[i.status];
           const p = i.profile;
           const r = rankOf[i.accession];
@@ -221,11 +234,19 @@ export default function InvestigationExplorer({
           );
         })}
       </section>
+      )}
+      {view === "cards" && shown.length > FIRST && (
+        <button type="button" className="more" onClick={() => setAll((v) => !v)} aria-expanded={all}>
+          {all ? "Show the top 6 only" : `Show all ${shown.length} investigations`}
+        </button>
+      )}
 
+
+      {view === "table" && (
       <section aria-label="Compare investigations" className="stack" style={{ gap: 12 }}>
         <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
           <h2 className="section">Compare side by side</h2>
-          <span className="small muted">Same order as the ranking above. A dash means PSI’s table does not give the value.</span>
+          <span className="small muted">Ranked for the environment selected above. A dash means PSI’s table does not give the value.</span>
         </div>
         <div className="table-scroll">
           <table className="src cmp-table">
@@ -269,6 +290,7 @@ export default function InvestigationExplorer({
           </table>
         </div>
       </section>
+      )}
     </>
   );
 }
