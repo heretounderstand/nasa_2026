@@ -191,3 +191,38 @@ def test_catalog_covers_every_psi_combustion_investigation(frame):
     for item in catalog.INCIDENTS + catalog.SPINOFFS:
         assert item["url"].startswith("https://") and set(item["scenarios"]) <= set(SCENARIOS_BY_ID)
 
+
+def test_inverse_flames_kept_apart(frame, sets):
+    df, _ = frame
+    inv = df[df["dataset"] == "PSI-159-inverse"]
+    assert len(inv) > 100
+    # L'O2 du brûleur n'est pas l'O2 ambiant : jamais dans la colonne commune.
+    assert inv["o2_mole_fraction"].isna().all()
+    assert inv["extra.oxidizer_o2_mole_fraction"].max() == pytest.approx(0.85)
+    assert (sets["gas_flame_self_extinction"]["dataset"] == "PSI-159-normal").all()
+
+
+def test_profiles_and_habitat_ranking(frame):
+    from engine import catalog, profiles
+    from engine.contexts import CONTEXTS
+    items = catalog.investigations(frame[0])["items"]
+    by = {i["accession"]: i for i in items}
+    bre = by["PSI-20"]["profile"]
+    assert bre["pillar"] == "prevention" and bre["o2_percent"] == [21.0, 40.0]
+    # Les valeurs aberrantes du tableau sont signalées, pas corrigées.
+    assert any("3400%" in q for q in bre["quality"])
+    assert any("autofill" in q for q in by["PSI-21"]["profile"]["quality"])
+    assert by["PSI-159"]["profile"]["oxidizer_o2_percent"][1] == 85.0
+    assert "CO2 dilution" in by["PSI-69"]["profile"]["varies"]
+    ranking = {h["id"]: h for h in profiles.rank_for_habitats(items, CONTEXTS)}
+    assert set(ranking) == {"iss", "gateway", "moon", "mars"}
+    for h in ranking.values():
+        assert len(h["ranking"]) == 24
+        for r in h["ranking"]:
+            assert r["score"] == r["directness"] + r["oxygen"] + r["gravity"] + r["usable"]
+            assert 0 <= r["score"] <= 6
+    # Atmosphère martienne inconnue : aucun point « oxygène » ne peut être attribué.
+    assert all(r["oxygen"] == 0 for r in ranking["mars"]["ranking"])
+    moon = {r["accession"]: r for r in ranking["moon"]["ranking"]}
+    assert moon["PSI-22"]["gravity"] == 1 and moon["PSI-69"]["gravity"] == 0
+

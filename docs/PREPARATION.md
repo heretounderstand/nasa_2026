@@ -90,6 +90,7 @@ from the preparation above and from the official challenge resources
 | Neighbour search now uses the scenario's own variables (CO2 fraction, fuel flow). | Claude Code |
 | Investigations view: the 24 PSI combustion investigations, with what each studied and whether it is used. Metadata from the PSI public API. | Claude Code |
 | Real incidents (Apollo 1, Apollo 13, Mir 1997) and three NASA spinoffs. The six NASA pages were read by an AI agent that returned verbatim quotes; every sentence shown stays within those quotes. | Claude Code |
+| After reading the full challenge statement: investigation profiles (fire-safety pillar, hardware family, fuels, tested ranges, what varies, data caveats), a relevance ranking of the 24 investigations for each crewed environment, a side-by-side comparison table, and a data download. Catalogue notes corrected for BRE, E-FIELD Flames and DAFT; CFI-G inverse flames imported. | Claude Code, directed by Adrien; six PSI summary tables downloaded by Adrien |
 
 Still to do by the team: validate the scenarios' risk levels and assumptions,
 pitch, video and submission.

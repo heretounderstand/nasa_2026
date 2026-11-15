@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from engine import catalog
+from engine import catalog, profiles
 from engine.confidence import assess
 from engine.contexts import CONTEXTS, effective_conditions
 from engine.datasets import QUESTIONS, build, to_frame
@@ -116,6 +116,7 @@ def run() -> dict:
     map_points = df[["experiment_id", "source_id", "dataset", "platform", "gravity_g", "gravity_regime",
                      "o2_mole_fraction", "pressure_kpa", "flow_velocity_cm_s", "fuel", "outcome_type",
                      "is_measured", "provenance_file", "provenance_row", "provenance_page"]]
+    inv = catalog.investigations(df)
     dashboard = {
         "disclaimer": "An exploration and teaching tool, not a flight-decision tool.",
         "contexts": [c.model_dump(mode="json") for c in CONTEXTS.values()],
@@ -130,7 +131,8 @@ def run() -> dict:
         "evidence_details": _evidence_details(df, answers),
         "limit_band": _limit_band(df),
         "field_notes": _field_notes(df),
-        "investigations": catalog.investigations(df),
+        "investigations": inv,
+        "habitat_ranking": profiles.rank_for_habitats(inv["items"], CONTEXTS),
         "incidents": catalog.INCIDENTS,
         "spinoffs": catalog.SPINOFFS,
         "challenge_resources": catalog.CHALLENGE_RESOURCES,
@@ -140,6 +142,11 @@ def run() -> dict:
     # Application Next.js : lit le même JSON au rendu serveur.
     NEXT_DATA.mkdir(parents=True, exist_ok=True)
     (NEXT_DATA / "dashboard.json").write_text(text, encoding="utf-8")
+    # Export téléchargeable depuis l'interface (données au schéma commun).
+    public = NEXT_DATA.parent / "public" / "data"
+    public.mkdir(parents=True, exist_ok=True)
+    df.to_csv(public / "experiments.csv", index=False)
+    (public / "answers.json").write_text(json.dumps(answers_json, indent=1, ensure_ascii=False), encoding="utf-8")
     return dashboard
 
 

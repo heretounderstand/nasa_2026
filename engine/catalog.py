@@ -11,15 +11,17 @@ import json
 
 import pandas as pd
 
+from engine import profiles
 from engine.importers.common import MANUAL
 
 # --------------------------------------------------------------------------- #
 # Usage de chaque investigation de combustion de PSI
 # --------------------------------------------------------------------------- #
 # statut : "scenario" (alimente un scénario), "notes" (observations citées),
-# "map" (conditions seulement, sur la carte), "not_used".
+# "map" (conditions seulement, sur la carte), "profile" (tableau de synthèse
+# résumé dans la fiche), "not_used".
 USAGE: dict[str, tuple[str, list[str], str]] = {
-    "PSI-159": ("scenario", ["s4"], "Normal-flame tests: self-extinction or sustained flame."),
+    "PSI-159": ("scenario", ["s4"], "Normal flames feed the gas-leak scenario. Inverse flames (oxygen-rich burner flow) are imported and summarised, but kept out of that model."),
     "PSI-39": ("scenario", ["s3"], "Cool-flame burning rate after the hot flame goes out."),
     "PSI-101": ("scenario", ["s5"], "ISS smoke detector signal and particle size, per material."),
     "PSI-102": ("scenario", ["s5"], "Its tests are in the combined SAME / SAME-R results workbook used for the smoke scenario."),
@@ -37,12 +39,12 @@ USAGE: dict[str, tuple[str, list[str], str]] = {
     "PSI-115": ("not_used", [], "Simulation cases only, no measurement."),
     "PSI-60": ("not_used", [], "Modelling study; no data table in PSI."),
     "PSI-62": ("not_used", [], "Modelling study; no data table in PSI."),
-    "PSI-47": ("not_used", [], "Feasibility test of an aerosol instrument, not a combustion result."),
-    "PSI-20": ("not_used", [], "Fundamental laminar-flame physics, not tied to one of the fire-safety scenarios; not downloaded."),
-    "PSI-21": ("not_used", [], "Fundamental laminar-flame physics, not tied to one of the fire-safety scenarios; not downloaded."),
-    "PSI-22": ("not_used", [], "Fundamental laminar-flame physics, not tied to one of the fire-safety scenarios; not downloaded."),
-    "PSI-23": ("not_used", [], "Fundamental laminar-flame physics, not tied to one of the fire-safety scenarios; not downloaded."),
-    "PSI-106": ("not_used", [], "Fundamental laminar-flame physics, not tied to one of the fire-safety scenarios; not downloaded."),
+    "PSI-47": ("profile", [], "PSI lists two measurement sessions with a dust aerosol: summarised here, not modelled."),
+    "PSI-20": ("profile", [], "PSI gives a day-by-day summary (fuel, burner size, oxygen levels, flames ignited), not test-level outcomes: summarised here, not modelled."),
+    "PSI-21": ("profile", [], "PSI gives a day-by-day summary (fuel, flow controllers, flames ignited), not test-level outcomes: summarised here, not modelled."),
+    "PSI-22": ("profile", [], "PSI gives a day-by-day summary (fuel, electrode polarity, flames ignited), not test-level outcomes: summarised here, not modelled."),
+    "PSI-23": ("profile", [], "PSI gives a day-by-day summary (fuel, atmosphere, flames ignited), not test-level outcomes: summarised here, not modelled."),
+    "PSI-106": ("profile", [], "PSI lists the test days and the fuel used on each: summarised here, not modelled."),
 }
 
 
@@ -75,8 +77,9 @@ def investigations(df: pd.DataFrame) -> dict:
             "scenarios": scenarios,
             "note": note,
             "n_imported": int(counts.get(inv["accession"], 0)),
+            "profile": profiles.profile(inv["accession"], df),
         })
-    order = {"scenario": 0, "notes": 1, "map": 2, "not_used": 3}
+    order = {"scenario": 0, "notes": 1, "map": 2, "profile": 3, "not_used": 4}
     items.sort(key=lambda i: (order[i["status"]], -i["n_imported"], int(i["accession"].split("-")[1])))
     return {"fetched": cat["fetched"], "items": items}
 

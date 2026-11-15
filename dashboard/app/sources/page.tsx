@@ -82,6 +82,17 @@ export default function SourcesPage() {
         </div>
       </section>
       <p className="small muted">
+        PSI is the source of every dataset marked “PSI dataset”. It holds no partial-gravity combustion data yet, so the lunar- and
+        Martian-gravity tests shown in this tool come from the papers and NASA reports listed above, each cited to the page.{" "}
+        <a href="/data/experiments.csv" download>
+          Download all imported tests (CSV)
+        </a>{" "}
+        ·{" "}
+        <a href="/data/answers.json" download>
+          engine answers (JSON)
+        </a>
+      </p>
+      <p className="small muted">
         Not accessible: MAPTIS (the materials certification database) and NASA Glenn’s ACME and Saffire data portals. The PSI AWS
         Open Data bucket does not include combustion.
       </p>

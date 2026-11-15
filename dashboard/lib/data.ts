@@ -135,6 +135,36 @@ export interface FieldNotes {
   source_id: string;
   items: { experiment_id: string; material: string; o2_mole_fraction: number | null; pressure_kpa: number | null; text: string; provenance: string }[];
 }
+export interface Profile {
+  pillar: "prevention" | "detection" | "suppression" | null;
+  directness: number;
+  hardware: string | null;
+  statement_note: string | null;
+  quality: string[];
+  n_tests?: number;
+  n_test_days?: number;
+  flames_ignited?: number | null;
+  fuel_types?: string[];
+  fuels?: string[];
+  n_fuels?: number;
+  o2_percent?: number[] | null;
+  o2_levels_percent?: number[] | null;
+  oxidizer_o2_percent?: number[] | null;
+  pressure_kpa?: number[] | null;
+  flow_cm_s?: number[] | null;
+  burner_mm?: number[] | null;
+  varies?: string[];
+  constant?: string[];
+  measurements?: string[];
+}
+export interface HabitatRanking {
+  id: string;
+  label: string;
+  o2_percent: number | null;
+  pressure_kpa: number | null;
+  gravity_g: number | null;
+  ranking: { accession: string; score: number; directness: number; oxygen: number; gravity: number; usable: number }[];
+}
 export interface Investigation {
   accession: string;
   name: string;
@@ -143,10 +173,11 @@ export interface Investigation {
   sub_area: string | null;
   objective: string | null;
   url: string;
-  status: "scenario" | "notes" | "map" | "not_used";
+  status: "scenario" | "notes" | "map" | "profile" | "not_used";
   scenarios: string[];
   note: string;
   n_imported: number;
+  profile: Profile;
 }
 export interface Incident {
   id: string;
@@ -177,6 +208,7 @@ export interface Dashboard {
   limit_band: LimitBand;
   field_notes: Record<string, FieldNotes>;
   investigations: { fetched: string; items: Investigation[] };
+  habitat_ranking: HabitatRanking[];
   incidents: Incident[];
   spinoffs: Spinoff[];
   challenge_resources: { title: string; url: string; use: string }[];

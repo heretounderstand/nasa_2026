@@ -1,22 +1,16 @@
 import Link from "next/link";
-import { D, scenarioById } from "@/lib/data";
-
-const STATUS: Record<string, { label: string; cls: string }> = {
-  scenario: { label: "FEEDS A SCENARIO", cls: "lit" },
-  notes: { label: "QUOTED, NOT CLASSIFIED", cls: "lit" },
-  map: { label: "ON THE MAP ONLY", cls: "dim" },
-  not_used: { label: "NOT USED", cls: "dark" },
-};
+import InvestigationExplorer from "@/components/InvestigationExplorer";
+import { D } from "@/lib/data";
 
 export default function InvestigationsPage() {
   const items = D.investigations.items;
   const used = items.filter((i) => i.status === "scenario" || i.status === "notes").length;
-  const onMap = items.filter((i) => i.status === "map").length;
+  const summarised = items.filter((i) => i.status === "map" || i.status === "profile").length;
   const imported = items.reduce((s, i) => s + i.n_imported, 0);
   return (
     <>
       <h1 className="hero">
-        {items.length} investigations. <span>What each one studied, and what we do with it.</span>
+        {items.length} investigations. <span>What each one studied, ranked for where crews will live.</span>
       </h1>
       <div className="row" style={{ gap: 40 }}>
         <div className="stat" style={{ flex: "1 1 240px" }}>
@@ -24,58 +18,34 @@ export default function InvestigationsPage() {
           <span>feed a scenario or are quoted in one.</span>
         </div>
         <div className="stat" style={{ flex: "1 1 240px" }}>
-          <b>{onMap}</b>
-          <span>appear on the map only: their PSI table gives conditions but no outcome.</span>
+          <b>{summarised}</b>
+          <span>are summarised only: PSI’s table gives conditions or test days, but no outcome.</span>
         </div>
         <div className="stat" style={{ flex: "1 1 240px" }}>
-          <b className="fire">{items.length - used - onMap}</b>
+          <b className="fire">{items.length - used - summarised}</b>
           <span>are not used. The reason is stated on each card.</span>
         </div>
         <div className="stat" style={{ flex: "1 1 240px" }}>
           <b>{imported.toLocaleString("en-US")}</b>
-          <span>tests imported from PSI, each traceable to a file and a row.</span>
+          <span>
+            tests imported, each traceable to a file and a row.{" "}
+            <a href="/data/experiments.csv" download>
+              Download the CSV
+            </a>
+          </span>
         </div>
       </div>
 
-      <section aria-label="PSI combustion investigations" className="inv-grid">
-        {items.map((i) => {
-          const st = STATUS[i.status];
-          return (
-            <article key={i.accession} className={`inv ${st.cls}`}>
-              <div className="inv-top">
-                <span className="mono small muted">{i.accession}</span>
-                <span className={`tag ${st.cls}`}>{st.label}</span>
-              </div>
-              <h2>{i.name}</h2>
-              {i.name !== i.title && <p className="small muted" style={{ margin: 0 }}>{i.title}</p>}
-              {i.objective && <p className="inv-obj">{i.objective}</p>}
-              <p className="small" style={{ margin: 0 }}>
-                <span className="muted">In this tool: </span>
-                {i.note}
-              </p>
-              <div className="inv-foot">
-                <span className="mono small muted">
-                  {i.n_imported > 0 ? `${i.n_imported} tests imported` : "no test imported"}
-                  {i.platform && i.platform !== "Not Applicable" ? ` · ${i.platform.replace("International Space Station (ISS)", "ISS")}` : ""}
-                </span>
-                <span className="inv-links">
-                  {i.scenarios.map((s) => (
-                    <Link key={s} href={`/scenario/${s}/iss`} title={scenarioById(s)?.title}>
-                      {s.toUpperCase()}
-                    </Link>
-                  ))}
-                  <a href={i.url} target="_blank" rel="noopener noreferrer">
-                    PSI ↗
-                  </a>
-                </span>
-              </div>
-            </article>
-          );
-        })}
-      </section>
+      <InvestigationExplorer
+        items={items}
+        rankings={D.habitat_ranking}
+        scenarioTitles={Object.fromEntries(D.scenarios.map((s) => [s.scenario_id, s.title]))}
+      />
+
       <p className="small muted" style={{ margin: 0 }}>
         Objectives are quoted from the PSI repository (metadata fetched {D.investigations.fetched}); long texts are cut at a sentence end.
-        The count of 24 covers every PSI investigation filed under combustion.
+        Pillars, hardware families and the links between investigations follow the challenge statement. Ranges are computed from the
+        imported tests, or read from PSI’s day-by-day summary tables. The 24 cover every PSI investigation filed under combustion.
       </p>
 
       <section aria-label="Back on Earth" className="stack" style={{ gap: 4 }}>

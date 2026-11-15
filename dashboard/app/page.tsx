@@ -50,7 +50,8 @@ export default function CartePage() {
               <b>{partial.length}</b>
               <span>
                 tests in partial gravity, from {partialSources.size} sources, all in a drop tower, a parabolic flight or a rocket:
-                from 5 s to about 2.5 min. Between 0 and 1 g, it is almost dark.
+                from 5 s to about 2.5 min. Between 0 and 1 g, it is almost dark. PSI holds no partial-gravity combustion
+                data: these come from published papers and NASA reports, listed in Sources.
               </span>
             </div>
             <div className="stat">

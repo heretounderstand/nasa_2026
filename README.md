@@ -11,7 +11,7 @@ The three verbs of the challenge map to three views:
 | Map | summarize | Where does knowledge stand, in oxygen × gravity space? |
 | Scenario | interpret | What do we know about this case, and how well? |
 | Priorities | rank | Which blind spots should be studied first? |
-| Investigations | summarize | What did each of the 24 PSI combustion investigations study, and what do we do with it? |
+| Investigations | summarize, rank | What did each of the 24 PSI combustion investigations study, and which matter most for each crewed environment? |
 
 ## What makes it different
 
@@ -25,7 +25,7 @@ The three verbs of the challenge map to three views:
 ```bash
 pip install pandas numpy scikit-learn pydantic openpyxl pytest
 python -m engine.pipeline      # import → models → answers (data/processed/, dashboard/data/)
-python -m pytest               # 67 tests
+python -m pytest               # 69 tests
 
 cd dashboard
 npm install
@@ -63,6 +63,7 @@ BASS (PSI-26) test-log observations are quoted verbatim and never classified. Th
 | `engine/models.py` | Classical models, grouped cross-validation, baseline, conformal prediction |
 | `engine/confidence.py` | Confidence engine: evidence × agreement, matrix, ceilings |
 | `engine/scenarios.py` | The seven scenarios; scenario assumptions listed separately |
+| `engine/profiles.py` | Per-investigation profile (pillar, hardware, fuels, ranges) and relevance ranking by habitat |
 | `engine/catalog.py` | Use of each investigation, real incidents, spinoffs, official resources |
 | `engine/pipeline.py` | Runs everything, writes `answers.json` and `dashboard.json` |
 | `dashboard/` | Next.js app; `app/api/` holds the two Gemini routes with guardrails |

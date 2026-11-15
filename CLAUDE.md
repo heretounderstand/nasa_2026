@@ -266,7 +266,11 @@ Ressources officielles du challenge : `RESSOURCES.md` (PSI confirmé comme sourc
 - **Vue Investigations** (`/investigations`) ajoutée à la navigation.
 - Next.js 16.4.6 ; Gemini `gemini-3.8-flash` testé avec la vraie clé.
 - `web/` (prototype statique) figé : plus régénéré par le pipeline.
-- 67 tests.
+- **Énoncé complet du challenge lu le 15 novembre** : l'objectif porte sur les *investigations* (résumer, comparer, classer). Ajouts : `engine/profiles.py` (fiche par investigation : pilier prévention/détection/suppression, famille de matériel, combustibles, plages testées, ce qui varie, réserves sur les données), **classement des 24 investigations par habitat** (score 0-6 : lien avec la sécurité incendie 0-2, oxygène couvert 0-2, gravité 0-1, résultats exploitables 0-1 ; le rover pressurisé partage l'atmosphère de la base lunaire), tableau de comparaison, export CSV/JSON (`dashboard/public/data/`).
+- Corrections d'après l'énoncé : BRE est une étude d'inflammabilité des matériaux ; E-FIELD Flames imite la gravité partielle ; DAFT partage un instrument avec SAME. Flammes inverses de CFI-G importées (`PSI-159-inverse`, O₂ du brûleur dans `extra`, jamais mêlées au modèle s4).
+- Tableaux de synthèse PSI-20, 21, 22, 23, 47, 106 : une ligne par journée, sans résultat ; artefacts de tableur signalés, jamais corrigés (« 3400 % », formules incrémentées « CH5 », « N3 »).
+- L'énoncé confirme : **aucune donnée de gravité partielle dans PSI**. Les nôtres viennent d'articles et de rapports ; l'interface le dit.
+- 69 tests.
 
 ### Reste à faire
 

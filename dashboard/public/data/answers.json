@@ -1,0 +1,2603 @@
+[
+ {
+  "scenario_id": "s6",
+  "context_id": "iss",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "medium",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.94,
+   "gravity_regime": "micro_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.514,
+   "evidence_score": 0.242,
+   "n_neighbors": 14,
+   "agreement": 0.015,
+   "n_sources": 2,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Nomex-0g_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 7
+   }
+  ],
+  "observations": {
+   "n": 7,
+   "counts": {
+    "more_flammable_than_1g": 4,
+    "similar_to_1g": 3
+   },
+   "delta_o2_pts": [
+    -0.3,
+    0.0,
+    -1.0,
+    0.0,
+    -3.0,
+    -2.5,
+    -2.0
+   ]
+  },
+  "gaps": [
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.4815,
+   "baseline_score": 0.5556,
+   "min_improvement": 0.0956,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s6",
+  "context_id": "gateway",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.375,
+   "gravity_regime": "micro_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.54,
+   "evidence_score": 0.101,
+   "n_neighbors": 4,
+   "agreement": 0.119,
+   "n_sources": 2,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Mylar-0g_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-0g_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-Lunar_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Lunar_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.01-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 10,
+   "counts": {
+    "more_flammable_than_1g": 7,
+    "similar_to_1g": 3
+   },
+   "delta_o2_pts": [
+    -4.1,
+    0.25,
+    -5.75,
+    -2.8,
+    0.0,
+    -1.0,
+    0.0,
+    -3.0,
+    -2.5,
+    -2.0
+   ]
+  },
+  "gaps": [
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.4815,
+   "baseline_score": 0.5556,
+   "min_improvement": 0.0956,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s6",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.247,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.6,
+   "evidence_score": 0.074,
+   "n_neighbors": 6,
+   "agreement": 0.35,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Mylar-Lunar_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Lunar_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-0g_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-0g_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-Martian_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "counts": {
+    "more_flammable_than_1g": 5,
+    "similar_to_1g": 1
+   },
+   "delta_o2_pts": [
+    -5.75,
+    -2.8,
+    -4.1,
+    0.25,
+    -3.1,
+    -1.7
+   ]
+  },
+  "gaps": [
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Single source: no independent cross-check.",
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.4815,
+   "baseline_score": 0.5556,
+   "min_improvement": 0.0956,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s6",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "medium",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 1.0,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.533,
+   "evidence_score": 0.267,
+   "n_neighbors": 9,
+   "agreement": 0.009,
+   "n_sources": 2,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.38-delta",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-Martian_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "OLSON13-Nomex-Martian_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_ULOIs-delta",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 9
+   }
+  ],
+  "observations": {
+   "n": 9,
+   "counts": {
+    "similar_to_1g": 5,
+    "more_flammable_than_1g": 4
+   },
+   "delta_o2_pts": [
+    0.0,
+    -1.0,
+    0.0,
+    0.0,
+    0.5,
+    0.0,
+    -3.1,
+    -3.35,
+    -1.7
+   ]
+  },
+  "gaps": [
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.5556,
+   "baseline_score": 0.5556,
+   "min_improvement": 0.0956,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s1",
+  "context_id": "iss",
+  "prediction": 0.155,
+  "confidence": "medium",
+  "evidence_axis": "medium",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 0.932,
+   "gravity_regime": "micro_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.5,
+   "evidence_score": 0.233,
+   "n_neighbors": 18,
+   "agreement": 0.809,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "min": 0.15,
+   "median": 0.155,
+   "max": 0.16
+  },
+  "gaps": [
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "regression tree (depth 3)",
+   "cv_score": 0.007,
+   "baseline_score": 0.0082,
+   "min_improvement": 0.0012,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s1",
+  "context_id": "gateway",
+  "prediction": null,
+  "confidence": "low",
+  "evidence_axis": "limited",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 0.004,
+   "gravity_regime": "micro_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.5,
+   "evidence_score": 0.001,
+   "n_neighbors": 0,
+   "agreement": 0.809,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.01",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "min": 0.15,
+   "median": 0.155,
+   "max": 0.16
+  },
+  "gaps": [
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "regression tree (depth 3)",
+   "cv_score": 0.007,
+   "baseline_score": 0.0082,
+   "min_improvement": 0.0012,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s1",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "low",
+  "evidence_axis": "limited",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 0.0,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.5,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.815,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.16",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "min": 0.16,
+   "median": 0.16,
+   "max": 0.17
+  },
+  "gaps": [
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "regression tree (depth 3)",
+   "cv_score": 0.007,
+   "baseline_score": 0.0082,
+   "min_improvement": 0.0012,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s1",
+  "context_id": "mars",
+  "prediction": 0.1683,
+  "confidence": "low",
+  "evidence_axis": "medium",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 1.0,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.5,
+   "evidence_score": 0.25,
+   "n_neighbors": 24,
+   "agreement": 0.821,
+   "n_sources": 1,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "KONNO23-a-Cu#2-60mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "KONNO23-b-Cu#3-60mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "KONNO23-c-Cu#3-150mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "KONNO23-d-NiCr#2-60mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "KONNO23-e-NiCr#3-60mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "KONNO23-f-NiCr#3-150mms-G0.38",
+    "source_id": "konno2023_wires",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "min": 0.16,
+   "median": 0.165,
+   "max": 0.18
+  },
+  "gaps": [
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "regression tree (depth 3)",
+   "cv_score": 0.007,
+   "baseline_score": 0.0082,
+   "min_improvement": 0.0012,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s2",
+  "context_id": "iss",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "medium",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.494,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 0.617,
+   "evidence_score": 0.305,
+   "n_neighbors": 10,
+   "agreement": 0.35,
+   "n_sources": 3,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Nomex-0g_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "FERKUL26-SIBAL-lunar-aircraft",
+    "source_id": "ferkul2026_lpsc",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "FERKUL26-SIBAL-lunar-centrifuge",
+    "source_id": "ferkul2026_lpsc",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON13-Nomex-Lunar_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "LUCI25-SIBAL-lunar",
+    "source_id": "ferkul2025_luci",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "LUCI25-PMMA-lunar",
+    "source_id": "ferkul2025_luci",
+    "relevance_rank": 6
+   }
+  ],
+  "observations": {
+   "n": 6,
+   "counts": {
+    "sustained": 5,
+    "extinction": 1
+   }
+  },
+  "gaps": [
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.5556,
+   "baseline_score": 0.537,
+   "min_improvement": 0.0679,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s2",
+  "context_id": "gateway",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.115,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 0.6,
+   "evidence_score": 0.069,
+   "n_neighbors": 2,
+   "agreement": 0.278,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Ultem-0g_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-0g_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Lunar_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "OLSON13-Nomex-0g_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "sustained": 4,
+    "extinction": 1
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check.",
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.5556,
+   "baseline_score": 0.537,
+   "min_improvement": 0.0679,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s2",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.004,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.6,
+   "evidence_score": 0.001,
+   "n_neighbors": 0,
+   "agreement": 0.029,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON13-Ultem-0g_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-0g_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Lunar_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "sustained": 3,
+    "extinction": 2
+   }
+  },
+  "gaps": [
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.5556,
+   "baseline_score": 0.537,
+   "min_improvement": 0.0679,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s2",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "medium",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 1.0,
+   "gravity_regime": "partial_short",
+   "gravity_factor": 0.5,
+   "source_quality": 0.6,
+   "evidence_score": 0.3,
+   "n_neighbors": 10,
+   "agreement": 0.0,
+   "n_sources": 2,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "OLSON24-PMMA-04",
+    "source_id": "olson2024_pmma",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "OLSON24-PMMA-05",
+    "source_id": "olson2024_pmma",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "OLSON24-PMMA-12",
+    "source_id": "olson2024_pmma",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "OLSON24-PMMA-13",
+    "source_id": "olson2024_pmma",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-Martian_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "OLSON13-Mylar-Martian_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "OLSON13-Ultem-Martian_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "OLSON13-Nomex-Martian_ULOIs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "OLSON13-Nomex-Martian_MOCs",
+    "source_id": "olson2013_mars",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 10,
+   "counts": {
+    "sustained": 5,
+    "extinction": 5
+   }
+  },
+  "gaps": [
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.5312,
+   "baseline_score": 0.5938,
+   "min_improvement": 0.0614,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s5",
+  "context_id": "iss",
+  "prediction": null,
+  "confidence": "medium",
+  "evidence_axis": "robust",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 1.0,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 1.0,
+   "n_neighbors": 36,
+   "agreement": 0.52,
+   "n_sources": 1,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-101-1-29-23",
+    "source_id": "PSI-101",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-101-1-30-24",
+    "source_id": "PSI-101",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-101-1-33-25",
+    "source_id": "PSI-101",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-101-1-47-26",
+    "source_id": "PSI-101",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-101-1-29a-27",
+    "source_id": "PSI-101",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-101-1-47a-28",
+    "source_id": "PSI-101",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-101-2-70-29",
+    "source_id": "PSI-101",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-101-2-92-30",
+    "source_id": "PSI-101",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-101-2-112-31",
+    "source_id": "PSI-101",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-101-2-114-32",
+    "source_id": "PSI-101",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 36,
+   "min": 0.1865,
+   "median": 0.87,
+   "max": 6.248,
+   "comparison": {
+    "by": "material",
+    "groups": [
+     {
+      "group": "kapton",
+      "n": 36,
+      "median": 0.87,
+      "n_at_ceiling": 2
+     },
+     {
+      "group": "teflon",
+      "n": 23,
+      "median": 0.95,
+      "n_at_ceiling": 0
+     },
+     {
+      "group": "pyrell",
+      "n": 20,
+      "median": 6.243,
+      "n_at_ceiling": 15
+     },
+     {
+      "group": "lampwick",
+      "n": 26,
+      "median": 6.248,
+      "n_at_ceiling": 22
+     },
+     {
+      "group": "silicone",
+      "n": 29,
+      "median": 6.249,
+      "n_at_ceiling": 29
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check.",
+   "No model: no input variable shared by the scenario and the data."
+  ],
+  "model": {
+   "name": null,
+   "cv_score": null,
+   "baseline_score": null,
+   "min_improvement": null,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s5",
+  "context_id": "gateway",
+  "prediction": null,
+  "confidence": "medium",
+  "evidence_axis": "robust",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 1.0,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 1.0,
+   "n_neighbors": 36,
+   "agreement": 0.52,
+   "n_sources": 1,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-101-1-29-23",
+    "source_id": "PSI-101",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-101-1-30-24",
+    "source_id": "PSI-101",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-101-1-33-25",
+    "source_id": "PSI-101",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-101-1-47-26",
+    "source_id": "PSI-101",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-101-1-29a-27",
+    "source_id": "PSI-101",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-101-1-47a-28",
+    "source_id": "PSI-101",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-101-2-70-29",
+    "source_id": "PSI-101",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-101-2-92-30",
+    "source_id": "PSI-101",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-101-2-112-31",
+    "source_id": "PSI-101",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-101-2-114-32",
+    "source_id": "PSI-101",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 36,
+   "min": 0.1865,
+   "median": 0.87,
+   "max": 6.248,
+   "comparison": {
+    "by": "material",
+    "groups": [
+     {
+      "group": "kapton",
+      "n": 36,
+      "median": 0.87,
+      "n_at_ceiling": 2
+     },
+     {
+      "group": "teflon",
+      "n": 23,
+      "median": 0.95,
+      "n_at_ceiling": 0
+     },
+     {
+      "group": "pyrell",
+      "n": 20,
+      "median": 6.243,
+      "n_at_ceiling": 15
+     },
+     {
+      "group": "lampwick",
+      "n": 26,
+      "median": 6.248,
+      "n_at_ceiling": 22
+     },
+     {
+      "group": "silicone",
+      "n": 29,
+      "median": 6.249,
+      "n_at_ceiling": 29
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check.",
+   "No model: no input variable shared by the scenario and the data."
+  ],
+  "model": {
+   "name": null,
+   "cv_score": null,
+   "baseline_score": null,
+   "min_improvement": null,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s5",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.041,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.008,
+   "n_neighbors": 0,
+   "agreement": 0.52,
+   "n_sources": 1,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-101-1-29-23",
+    "source_id": "PSI-101",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-101-1-30-24",
+    "source_id": "PSI-101",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-101-1-33-25",
+    "source_id": "PSI-101",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-101-1-47-26",
+    "source_id": "PSI-101",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-101-1-29a-27",
+    "source_id": "PSI-101",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-101-1-47a-28",
+    "source_id": "PSI-101",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-101-2-70-29",
+    "source_id": "PSI-101",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-101-2-92-30",
+    "source_id": "PSI-101",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-101-2-112-31",
+    "source_id": "PSI-101",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-101-2-114-32",
+    "source_id": "PSI-101",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 36,
+   "min": 0.1865,
+   "median": 0.87,
+   "max": 6.248,
+   "comparison": {
+    "by": "material",
+    "groups": [
+     {
+      "group": "kapton",
+      "n": 36,
+      "median": 0.87,
+      "n_at_ceiling": 2
+     },
+     {
+      "group": "teflon",
+      "n": 23,
+      "median": 0.95,
+      "n_at_ceiling": 0
+     },
+     {
+      "group": "pyrell",
+      "n": 20,
+      "median": 6.243,
+      "n_at_ceiling": 15
+     },
+     {
+      "group": "lampwick",
+      "n": 26,
+      "median": 6.248,
+      "n_at_ceiling": 22
+     },
+     {
+      "group": "silicone",
+      "n": 29,
+      "median": 6.249,
+      "n_at_ceiling": 29
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "No experiment in lunar gravity for this question.",
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "No model: no input variable shared by the scenario and the data."
+  ],
+  "model": {
+   "name": null,
+   "cv_score": null,
+   "baseline_score": null,
+   "min_improvement": null,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s5",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.001,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.52,
+   "n_sources": 1,
+   "features": [
+    "gravity_g"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-101-1-29-23",
+    "source_id": "PSI-101",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-101-1-30-24",
+    "source_id": "PSI-101",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-101-1-33-25",
+    "source_id": "PSI-101",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-101-1-47-26",
+    "source_id": "PSI-101",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-101-1-29a-27",
+    "source_id": "PSI-101",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-101-1-47a-28",
+    "source_id": "PSI-101",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-101-2-70-29",
+    "source_id": "PSI-101",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-101-2-92-30",
+    "source_id": "PSI-101",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-101-2-112-31",
+    "source_id": "PSI-101",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-101-2-114-32",
+    "source_id": "PSI-101",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 36,
+   "min": 0.1865,
+   "median": 0.87,
+   "max": 6.248,
+   "comparison": {
+    "by": "material",
+    "groups": [
+     {
+      "group": "kapton",
+      "n": 36,
+      "median": 0.87,
+      "n_at_ceiling": 2
+     },
+     {
+      "group": "teflon",
+      "n": 23,
+      "median": 0.95,
+      "n_at_ceiling": 0
+     },
+     {
+      "group": "pyrell",
+      "n": 20,
+      "median": 6.243,
+      "n_at_ceiling": 15
+     },
+     {
+      "group": "lampwick",
+      "n": 26,
+      "median": 6.248,
+      "n_at_ceiling": 22
+     },
+     {
+      "group": "silicone",
+      "n": 29,
+      "median": 6.249,
+      "n_at_ceiling": 29
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "No experiment in Martian gravity for this question.",
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "No model: no input variable shared by the scenario and the data."
+  ],
+  "model": {
+   "name": null,
+   "cv_score": null,
+   "baseline_score": null,
+   "min_improvement": null,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s3",
+  "context_id": "iss",
+  "prediction": null,
+  "confidence": "medium",
+  "evidence_axis": "robust",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.996,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.996,
+   "n_neighbors": 69,
+   "agreement": 0.471,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.he_mole_fraction"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-39-1206",
+    "source_id": "PSI-39",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-39-1207",
+    "source_id": "PSI-39",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-39-1208",
+    "source_id": "PSI-39",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-39-1209",
+    "source_id": "PSI-39",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-39-1210",
+    "source_id": "PSI-39",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-39-1211",
+    "source_id": "PSI-39",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-39-1218",
+    "source_id": "PSI-39",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-39-1219",
+    "source_id": "PSI-39",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-39-1221",
+    "source_id": "PSI-39",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-39-1222",
+    "source_id": "PSI-39",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 25,
+   "counts": {
+    "cool_flame": 22,
+    "no_cool_flame": 3
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check.",
+   "The model does not beat the baseline in validation: only neighbouring experiments are shown."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.7671,
+   "baseline_score": 0.8493,
+   "min_improvement": 0.0296,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s3",
+  "context_id": "gateway",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.003,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.003,
+   "n_neighbors": 0,
+   "agreement": 0.316,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.he_mole_fraction"
+   ]
+  },
+  "ceilings_applied": [
+   "out_of_data_envelope",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-39-1242",
+    "source_id": "PSI-39",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-39-1243",
+    "source_id": "PSI-39",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-39-1245",
+    "source_id": "PSI-39",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-39-1246",
+    "source_id": "PSI-39",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-39-1343",
+    "source_id": "PSI-39",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-39-1344",
+    "source_id": "PSI-39",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-39-1345",
+    "source_id": "PSI-39",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-39-1346",
+    "source_id": "PSI-39",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-39-1347",
+    "source_id": "PSI-39",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-39-1348",
+    "source_id": "PSI-39",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 11,
+   "counts": {
+    "cool_flame": 9,
+    "no_cool_flame": 2
+   }
+  },
+  "gaps": [
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.7671,
+   "baseline_score": 0.8493,
+   "min_improvement": 0.0296,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s3",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.0,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.497,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.he_mole_fraction"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-39-1237",
+    "source_id": "PSI-39",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-39-1238",
+    "source_id": "PSI-39",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-39-1239",
+    "source_id": "PSI-39",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-39-1240",
+    "source_id": "PSI-39",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-39-1351",
+    "source_id": "PSI-39",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-39-1355",
+    "source_id": "PSI-39",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-39-1356",
+    "source_id": "PSI-39",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-39-1357",
+    "source_id": "PSI-39",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-39-1358",
+    "source_id": "PSI-39",
+    "relevance_rank": 9
+   }
+  ],
+  "observations": {
+   "n": 9,
+   "counts": {
+    "cool_flame": 8,
+    "no_cool_flame": 1
+   }
+  },
+  "gaps": [
+   "No experiment in lunar gravity for this question.",
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.7671,
+   "baseline_score": 0.8493,
+   "min_improvement": 0.0296,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s3",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.001,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.321,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "extra.he_mole_fraction"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-39-1206",
+    "source_id": "PSI-39",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-39-1207",
+    "source_id": "PSI-39",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-39-1208",
+    "source_id": "PSI-39",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-39-1209",
+    "source_id": "PSI-39",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-39-1210",
+    "source_id": "PSI-39",
+    "relevance_rank": 5
+   },
+   {
+    "experiment_id": "PSI-39-1211",
+    "source_id": "PSI-39",
+    "relevance_rank": 6
+   },
+   {
+    "experiment_id": "PSI-39-1212",
+    "source_id": "PSI-39",
+    "relevance_rank": 7
+   },
+   {
+    "experiment_id": "PSI-39-1213",
+    "source_id": "PSI-39",
+    "relevance_rank": 8
+   },
+   {
+    "experiment_id": "PSI-39-1214",
+    "source_id": "PSI-39",
+    "relevance_rank": 9
+   },
+   {
+    "experiment_id": "PSI-39-1215",
+    "source_id": "PSI-39",
+    "relevance_rank": 10
+   }
+  ],
+  "observations": {
+   "n": 117,
+   "counts": {
+    "cool_flame": 96,
+    "no_cool_flame": 21
+   }
+  },
+  "gaps": [
+   "No experiment in Martian gravity for this question.",
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.8493,
+   "baseline_score": 0.8493,
+   "min_improvement": 0.0296,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s4",
+  "context_id": "iss",
+  "prediction": "extinction",
+  "confidence": "medium",
+  "evidence_axis": "robust",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 0.472,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.472,
+   "n_neighbors": 6,
+   "agreement": 1.0,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.fuel_mole_fraction",
+    "extra.fuel_flow_mg_s"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-159-N-21088M4-12",
+    "source_id": "PSI-159",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F2-59",
+    "source_id": "PSI-159",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F3-60",
+    "source_id": "PSI-159",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F4-61",
+    "source_id": "PSI-159",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-159-N-21112H2-64",
+    "source_id": "PSI-159",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "extinction": 5
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.8797,
+   "baseline_score": 0.7669,
+   "min_improvement": 0.0367,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s4",
+  "context_id": "gateway",
+  "prediction": "extinction",
+  "confidence": "low",
+  "evidence_axis": "limited",
+  "agreement_axis": "high",
+  "components": {
+   "coverage": 0.145,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.145,
+   "n_neighbors": 3,
+   "agreement": 1.0,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.fuel_mole_fraction",
+    "extra.fuel_flow_mg_s"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-159-N-21112F2-59",
+    "source_id": "PSI-159",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-159-N-21088M4-12",
+    "source_id": "PSI-159",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F3-60",
+    "source_id": "PSI-159",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F4-61",
+    "source_id": "PSI-159",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-159-N-21112H1-63",
+    "source_id": "PSI-159",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "extinction": 5
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.8797,
+   "baseline_score": 0.7669,
+   "min_improvement": 0.0367,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s4",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.001,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.0,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.fuel_mole_fraction",
+    "extra.fuel_flow_mg_s"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-159-N-21112A6-53",
+    "source_id": "PSI-159",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-159-N-21088D1-5",
+    "source_id": "PSI-159",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-159-N-21112A4-49",
+    "source_id": "PSI-159",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-159-N-21112A3-48",
+    "source_id": "PSI-159",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-159-N-21112A1-46",
+    "source_id": "PSI-159",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "sustained": 3,
+    "extinction": 2
+   }
+  },
+  "gaps": [
+   "No experiment in lunar gravity for this question.",
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "decision tree (depth 3)",
+   "cv_score": 0.8797,
+   "baseline_score": 0.7669,
+   "min_improvement": 0.0367,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s4",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.0,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.029,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "extra.fuel_mole_fraction",
+    "extra.fuel_flow_mg_s"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source",
+   "model_below_baseline"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-159-N-21088D1-5",
+    "source_id": "PSI-159",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-159-N-21088M4-12",
+    "source_id": "PSI-159",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-159-N-21112A4-49",
+    "source_id": "PSI-159",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-159-N-21112A6-53",
+    "source_id": "PSI-159",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-159-N-21112F2-59",
+    "source_id": "PSI-159",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "counts": {
+    "extinction": 3,
+    "sustained": 2
+   }
+  },
+  "gaps": [
+   "No experiment in Martian gravity for this question.",
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "logistic regression",
+   "cv_score": 0.7594,
+   "baseline_score": 0.7669,
+   "min_improvement": 0.0367,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s7",
+  "context_id": "iss",
+  "prediction": 0.7274,
+  "confidence": "low",
+  "evidence_axis": "medium",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.205,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.205,
+   "n_neighbors": 16,
+   "agreement": 0.486,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.co2_mole_fraction",
+    "extra.he_mole_fraction",
+    "extra.droplet_d0_mm"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-69-135",
+    "source_id": "PSI-69",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-69-118",
+    "source_id": "PSI-69",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-69-155",
+    "source_id": "PSI-69",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-69-134",
+    "source_id": "PSI-69",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-69-180",
+    "source_id": "PSI-69",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "min": 0.0,
+   "median": 0.9206,
+   "max": 0.967,
+   "comparison": {
+    "by": "CO2 level",
+    "groups": [
+     {
+      "group": "no CO2",
+      "n": 36,
+      "median": 0.792
+     },
+     {
+      "group": "CO2 below 30%",
+      "n": 20,
+      "median": 0.808
+     },
+     {
+      "group": "CO2 30% or more",
+      "n": 9,
+      "median": 0.97
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "ridge regression",
+   "cv_score": 0.1525,
+   "baseline_score": 0.2163,
+   "min_improvement": 0.0228,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s7",
+  "context_id": "gateway",
+  "prediction": 0.4977,
+  "confidence": "very_low",
+  "evidence_axis": "medium",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.196,
+   "gravity_regime": "micro_long",
+   "gravity_factor": 1.0,
+   "source_quality": 1.0,
+   "evidence_score": 0.196,
+   "n_neighbors": 5,
+   "agreement": 0.393,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.co2_mole_fraction",
+    "extra.he_mole_fraction",
+    "extra.droplet_d0_mm"
+   ]
+  },
+  "ceilings_applied": [
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-69-94",
+    "source_id": "PSI-69",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-69-95",
+    "source_id": "PSI-69",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-69-178",
+    "source_id": "PSI-69",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-69-101",
+    "source_id": "PSI-69",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-69-135",
+    "source_id": "PSI-69",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "min": 0.0,
+   "median": 0.7861,
+   "max": 0.8892,
+   "comparison": {
+    "by": "CO2 level",
+    "groups": [
+     {
+      "group": "no CO2",
+      "n": 36,
+      "median": 0.792
+     },
+     {
+      "group": "CO2 below 30%",
+      "n": 20,
+      "median": 0.808
+     },
+     {
+      "group": "CO2 30% or more",
+      "n": 9,
+      "median": 0.97
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "Single source: no independent cross-check."
+  ],
+  "model": {
+   "name": "ridge regression",
+   "cv_score": 0.1525,
+   "baseline_score": 0.2163,
+   "min_improvement": 0.0228,
+   "shown": true
+  }
+ },
+ {
+  "scenario_id": "s7",
+  "context_id": "moon",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "low",
+  "components": {
+   "coverage": 0.004,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.001,
+   "n_neighbors": 0,
+   "agreement": 0.154,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "o2_mole_fraction",
+    "pressure_kpa",
+    "extra.co2_mole_fraction",
+    "extra.he_mole_fraction",
+    "extra.droplet_d0_mm"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-69-94",
+    "source_id": "PSI-69",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-69-95",
+    "source_id": "PSI-69",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-69-178",
+    "source_id": "PSI-69",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-69-101",
+    "source_id": "PSI-69",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-69-135",
+    "source_id": "PSI-69",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "min": 0.0,
+   "median": 0.7861,
+   "max": 0.8892,
+   "comparison": {
+    "by": "CO2 level",
+    "groups": [
+     {
+      "group": "no CO2",
+      "n": 36,
+      "median": 0.792
+     },
+     {
+      "group": "CO2 below 30%",
+      "n": 20,
+      "median": 0.808
+     },
+     {
+      "group": "CO2 30% or more",
+      "n": 9,
+      "median": 0.97
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "No experiment in lunar gravity for this question.",
+   "No long-duration measurement in lunar gravity. First measurement on the Moon expected from FM2 (late 2026).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "ridge regression",
+   "cv_score": 0.1525,
+   "baseline_score": 0.2163,
+   "min_improvement": 0.0228,
+   "shown": false
+  }
+ },
+ {
+  "scenario_id": "s7",
+  "context_id": "mars",
+  "prediction": null,
+  "confidence": "very_low",
+  "evidence_axis": "limited",
+  "agreement_axis": "medium",
+  "components": {
+   "coverage": 0.0,
+   "gravity_regime": "partial_untested",
+   "gravity_factor": 0.2,
+   "source_quality": 1.0,
+   "evidence_score": 0.0,
+   "n_neighbors": 0,
+   "agreement": 0.5,
+   "n_sources": 1,
+   "features": [
+    "gravity_g",
+    "extra.co2_mole_fraction",
+    "extra.he_mole_fraction",
+    "extra.droplet_d0_mm"
+   ]
+  },
+  "ceilings_applied": [
+   "partial_gravity_no_long_duration",
+   "out_of_data_envelope",
+   "single_source"
+  ],
+  "evidence": [
+   {
+    "experiment_id": "PSI-69-118",
+    "source_id": "PSI-69",
+    "relevance_rank": 1
+   },
+   {
+    "experiment_id": "PSI-69-178",
+    "source_id": "PSI-69",
+    "relevance_rank": 2
+   },
+   {
+    "experiment_id": "PSI-69-195",
+    "source_id": "PSI-69",
+    "relevance_rank": 3
+   },
+   {
+    "experiment_id": "PSI-69-135",
+    "source_id": "PSI-69",
+    "relevance_rank": 4
+   },
+   {
+    "experiment_id": "PSI-69-102",
+    "source_id": "PSI-69",
+    "relevance_rank": 5
+   }
+  ],
+  "observations": {
+   "n": 5,
+   "min": 0.0,
+   "median": 0.9608,
+   "max": 0.967,
+   "comparison": {
+    "by": "CO2 level",
+    "groups": [
+     {
+      "group": "no CO2",
+      "n": 36,
+      "median": 0.792
+     },
+     {
+      "group": "CO2 below 30%",
+      "n": 20,
+      "median": 0.808
+     },
+     {
+      "group": "CO2 30% or more",
+      "n": 9,
+      "median": 0.97
+     }
+    ]
+   }
+  },
+  "gaps": [
+   "No experiment in Martian gravity for this question.",
+   "No long-duration measurement in Martian gravity.",
+   "Habitat atmosphere not yet defined (oxygen level, pressure).",
+   "Scenario outside the data envelope: no nearby experiment.",
+   "Single source: no independent cross-check.",
+   "Prediction hidden: the model would extrapolate beyond the data."
+  ],
+  "model": {
+   "name": "ridge regression",
+   "cv_score": 0.1718,
+   "baseline_score": 0.2163,
+   "min_improvement": 0.0228,
+   "shown": false
+  }
+ }
+]

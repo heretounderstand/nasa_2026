@@ -92,6 +92,53 @@ def import_psi159() -> ImportResult:
     return res
 
 
+def import_psi159_inverse() -> ImportResult:
+    """Flammes inverses de CFI-G : un mélange O2/N2 sort du brûleur dans une
+    ambiance de combustible dilué. Ce sont les essais en microgravité au plus
+    fort taux d'oxygène de PSI (énoncé du challenge).
+
+    L'O2 décrit ici l'écoulement du brûleur, pas l'ambiance : il va dans
+    `extra.oxidizer_o2_mole_fraction`, et `o2_mole_fraction` reste vide. Ces
+    essais ne sont donc ni placés sur la carte O2 × gravité ni mêlés aux
+    flammes normales dans un modèle.
+    """
+    res = ImportResult("PSI-159-inverse", sources=[SOURCES["PSI-159"]])
+    path = raw_path("PSI-159", "PSI-159_Experimental table_CFI-G_Inverse Flames.csv")
+    df = read_csv(path)
+    end_col = [c for c in df.columns if c.lower().startswith("self")][0]
+    for row_no, r in df.iterrows():
+        where = f"{rel(path)}:{row_no}"
+        if is_blank(r["Test"]):
+            continue
+        end = str(r[end_col]).strip()
+        if end not in ("SE", "FT"):
+            res.skip(where, f"no established flame ('{end}')")
+            continue
+        xo2 = _f(r["XO2"])
+        comment = "" if is_blank(r["Comments"]) else str(r["Comments"])
+        _add(
+            res, where,
+            experiment_id=f"PSI-159-I-{str(r['Test']).replace(' ', '')}-{row_no}",
+            source_id="PSI-159", dataset="PSI-159-inverse",
+            provenance_file=rel(path), provenance_row=int(row_no),
+            platform="iss", gravity_g=0.0,
+            pressure_kpa=float(r["approx p (bar)"]) * BAR_KPA,
+            diluent="N2", fuel=str(r["Fuel"]).strip().lower(), fuel_type="gas", geometry="inverse_jet_flame",
+            extra={
+                "oxidizer_o2_mole_fraction": xo2,
+                "ambient_fuel_mole_fraction": _f(r["Xf before test"]),
+                "oxidizer_flow_mg_s": _f(r["O2 flow rate (mg/s)"]),
+            },
+            outcome_type="extinction" if end == "SE" else "sustained",
+            is_measured=True,
+            extinction_criterion="SE: self-extinction; FT: flow terminated with the flame still present",
+            quality_flags=list(ISS_FLAGS) + ["o2_is_burner_flow_not_ambient"],
+            notes=(f"inverse flame; burner flow {xo2:.0%} O2; burn time {r['burn time (sec)']} s"
+                   + (f"; {comment}" if comment else "")),
+        )
+    return res
+
+
 # --------------------------------------------------------------------------- #
 # PSI-10 ACME Flame Design — conditions seulement (carte)
 # --------------------------------------------------------------------------- #
@@ -461,4 +508,4 @@ def import_bass_observations() -> ImportResult:
     return res
 
 
-ALL = [import_bass_observations, import_psi159, import_psi10, import_psi69, import_psi39, import_saffire, import_psi101, import_bass]
+ALL = [import_bass_observations, import_psi159, import_psi159_inverse, import_psi10, import_psi69, import_psi39, import_saffire, import_psi101, import_bass]
