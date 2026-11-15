@@ -202,7 +202,7 @@ P et A discrétisés en trois niveaux (seuils à calibrer et à documenter) :
 ## 8. Stack
 
 - Moteur et pipeline de données : Python (pandas, scikit-learn ; MAPIE ou équivalent pour la prédiction conforme ; pydantic pour le schéma).
-- Front-end : à décider (application web). Doit reproduire la maquette.
+- Front-end : **Next.js 16** (`dashboard/`), qui lit `dashboard/data/dashboard.json` produit par le pipeline Python. LLM : **Gemini** (clé `GEMINI_API_KEY` dans `dashboard/.env.local`), appelé uniquement côté serveur.
 
 ## 9. Direction visuelle (maquette v2)
 
@@ -255,7 +255,7 @@ PSI-69 FLEX : 273 essais (ligne 115 : pression 0 mmHg, écartée). PSI-10, PSI-2
 
 ### Reste à faire
 
-- Brancher le LLM (aiguillage de la question, rédaction de l'explication) ; aujourd'hui : mots-clés et texte par règles.
+- Tester Gemini avec la vraie clé (`npm run gemini:check`) ; garde-fous : nombres vérifiés contre les faits du moteur, repli sur le texte par règles.
 - Valider les niveaux de risque et les hypothèses de scénario avec l'équipe.
 - Intégrer FM2 dès publication (`data/manual/build_partial_gravity.py`).
 

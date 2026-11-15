@@ -31,6 +31,7 @@ from engine.schema import Confidence
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "processed"
 WEB_DATA = ROOT / "web" / "data"
+NEXT_DATA = ROOT / "dashboard" / "data"
 
 CONF_RANK = {c: i for i, c in enumerate(
     [Confidence.TRES_FAIBLE, Confidence.FAIBLE, Confidence.MOYENNE, Confidence.ELEVEE])}
@@ -131,6 +132,9 @@ def run() -> dict:
     # Copie lisible par le front-end, y compris ouvert en file:// (pas de fetch).
     WEB_DATA.mkdir(parents=True, exist_ok=True)
     (WEB_DATA / "dashboard.js").write_text("window.DASHBOARD = " + text + ";\n", encoding="utf-8")
+    # Application Next.js : lit le même JSON au rendu serveur.
+    NEXT_DATA.mkdir(parents=True, exist_ok=True)
+    (NEXT_DATA / "dashboard.json").write_text(text, encoding="utf-8")
     return dashboard
 
 

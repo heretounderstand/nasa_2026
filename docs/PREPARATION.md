@@ -26,6 +26,8 @@ declared**. This file is that documentation.
 | 9 October | Identification of the PSI files to download (via PSI's public API) and of the partial-gravity articles. Manual download of the files from psi.nasa.gov and NTRS. | Claude Code (identification), Adrien (download) |
 | 9 October | Importers for the PSI datasets, manual partial-gravity table, one model per question, pipeline, static dashboard. | Claude Code, directed by Adrien |
 | 11 October | Agreement of the local event organizers; this declaration. | Adrien |
+| 11 October | Front-end rebuilt in Next.js (`dashboard/`), reading the engine's output. Gemini connected through two server routes, with guardrails. The static version is kept in `web/` as a fallback. | Claude Code, directed by Adrien |
+| 17 October | Gemini default model updated to `gemini-3.8-flash`; Next.js navigation fix; phone layout for the map (portrait chart, zoom panel below it). | Claude Code, directed by Adrien |
 
 The repository's git history records the state of the work from its first
 commit onward.
@@ -58,17 +60,23 @@ The design phase used Claude on claude.ai.
   the user) and validated the results.
 - Narrative, pitch and video: [TEAMMATE'S NAME], [TO DO DURING THE HACKATHON].
 
-**What the AI does not do in the product itself:** in the dashboard, no number
-and no confidence level comes from a language model. They come from the NASA
-data and from a deterministic engine whose rules are documented and tested.
-Today the explanations are written by fixed rules from the engine's output; the
-question bar uses keyword matching.
+**AI inside the product:** the dashboard calls Google Gemini (model set in
+`GEMINI_MODEL`) for two tasks only:
+- routing a free-text question to one of the six scenarios and four contexts,
+  chosen from a closed list (the model never answers the question itself);
+- rewriting, for a general audience, facts that the engine has already
+  written by fixed rules.
+
+No number and no confidence level shown to the user comes from a language
+model. They come from the NASA data and from a deterministic engine whose
+rules are documented and tested. A Gemini text is rejected, and the
+rule-based text is shown instead, if it contains any number that is not
+already in the engine's facts or names a different confidence level. The
+interface labels which of the two texts is displayed.
 
 ## What remains for the hackathon weekend
 
 - Integrate the data released for the hackathon, and any new results (FM2).
-- Connect a language model, strictly limited to routing questions and
-  writing explanations from the engine's output.
 - Validate the scenarios' risk levels and assumptions with the team.
 - Pitch, video and submission.
 
