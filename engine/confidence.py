@@ -131,25 +131,41 @@ class CoverageResult:
     n_within_radius: int
 
 
+def _xval(x: Conditions, f: str):
+    """Valeur d'une variable du scénario ; « extra.<clé> » lit Conditions.extra."""
+    if f.startswith("extra."):
+        v = x.extra.get(f[6:])
+        return v if isinstance(v, (int, float)) else None
+    return getattr(x, f)
+
+
 def coverage(
-    x: Conditions, df: pd.DataFrame, settings: Settings = DEFAULT_SETTINGS
+    x: Conditions, df: pd.DataFrame, settings: Settings = DEFAULT_SETTINGS,
+    extra_features: tuple[str, ...] = (),
 ) -> CoverageResult:
-    """κ(x) = exp(−d_k / d_ref) dans l'espace standardisé des paramètres."""
+    """κ(x) = exp(−d_k / d_ref) dans l'espace standardisé des paramètres.
+
+    `extra_features` : variables pré-allumage propres à la question (ex. dose
+    de CO2), prises en compte quand le scénario les renseigne. Sans elles, les
+    voisines seraient choisies sans regarder la variable clé du scénario.
+    """
+    candidates = list(NUMERIC_FEATURES) + [f for f in extra_features if f.startswith("extra.")]
     features = [
-        f for f in NUMERIC_FEATURES
-        if getattr(x, f) is not None and f in df and df[f].notna().any()
+        f for f in candidates
+        if _xval(x, f) is not None and f in df and df[f].notna().any()
     ]
     empty = CoverageResult(0.0, features, [], [], float("nan"), 0)
     if not features:
         return empty
-    data = df[features].dropna().astype(float)
+    data = df[features].apply(pd.to_numeric, errors="coerce").dropna().astype(float)
     if data.empty:
         return empty
 
     mean = data.mean()
-    std = data.std(ddof=0).clip(lower=pd.Series(settings.min_scale)[features])
+    floor = pd.Series({f: settings.min_scale.get(f, 0.0) for f in features})
+    std = data.std(ddof=0).clip(lower=floor).replace(0, 1.0)
     X = ((data - mean) / std).to_numpy()
-    q = ((pd.Series({f: float(getattr(x, f)) for f in features}) - mean) / std).to_numpy()
+    q = ((pd.Series({f: float(_xval(x, f)) for f in features}) - mean) / std).to_numpy()
 
     d = np.linalg.norm(X - q, axis=1)
     order = np.argsort(d, kind="stable")
@@ -375,6 +391,7 @@ def assess(
     task: str,
     model: ModelResult | None = None,
     settings: Settings = DEFAULT_SETTINGS,
+    extra_features: tuple[str, ...] = (),
 ) -> Answer:
     """Évalue un scénario dans un contexte à partir des expériences d'UN jeu de données.
 
@@ -390,7 +407,7 @@ def assess(
         raise ValueError("La gravité du scénario doit être connue.")
 
     # Preuves
-    cov = coverage(x, df, settings)
+    cov = coverage(x, df, settings, extra_features)
     neighbors = df.loc[cov.neighbor_index]
     gravity_label, status = gravity_status(x.gravity_regime, df, settings)
     gamma = settings.gamma[status]

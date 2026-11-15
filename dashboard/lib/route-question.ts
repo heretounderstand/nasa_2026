@@ -8,6 +8,7 @@ const CTX: [RegExp, ContextId][] = [
   [/\biss\b|station/i, "iss"],
 ];
 const SCN: [RegExp, ScenarioId][] = [
+  [/extinguish|suppress|co2|carbon dioxide|put (it|the fire|the flame) out/i, "s7"],
   [/wire|cable|electric|insulation|c[âa]ble/i, "s1"],
   [/smoke|detect|alarm|fum/i, "s5"],
   [/cool flame|invisible|droplet|fuel drop|froide/i, "s3"],

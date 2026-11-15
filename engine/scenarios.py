@@ -24,6 +24,9 @@ class ScenarioDef:
     assumptions: tuple[str, ...] = ()
     # Restreint le jeu aux essais du même combustible (comparaison pertinente).
     match_fuel: bool = False
+    # Comparaison affichée à côté de la réponse : "fuel" (médiane par matériau)
+    # ou "co2" (médiane par dose de CO2, même combustible).
+    compare: str | None = None
 
     def for_context(self, context_id: str) -> Scenario:
         return Scenario(
@@ -53,10 +56,10 @@ SCENARIOS: list[ScenarioDef] = [
     ),
     ScenarioDef(
         "s5", "Smoke: will the detector see it?",
-        "How large are the smoke particles from overheated Kapton insulation?",
-        "smoke_particle_size", 2, {"fuel": "kapton", "fuel_type": "solid"},
+        "How strong a signal does the ISS smoke detector give for smoke from overheated Kapton insulation?",
+        "smoke_detector_signal", 2, {"fuel": "kapton", "fuel_type": "solid"},
         ("Kapton (a common wire insulation), chosen for the scenario.",),
-        match_fuel=True,
+        match_fuel=True, compare="fuel",
     ),
     ScenarioDef(
         "s3", "Invisible cool flame after extinction",
@@ -72,6 +75,17 @@ SCENARIOS: list[ScenarioDef] = [
         {"fuel_type": "gas", "extra": {"fuel_mole_fraction": 1.0, "fuel_flow_mg_s": 1.0}},
         ("Pure, undiluted gas (fuel fraction 1).",
          "Small leak: 1 mg/s flow, the median of the ACME CFI-G tests."),
+    ),
+    ScenarioDef(
+        "s7", "Extinguisher: does CO2 put the flame out?",
+        "With CO2 released around a burning fuel droplet, how early does the flame go out?",
+        "suppressant_extinction", 2,
+        {"fuel": "heptane", "fuel_type": "liquid_droplet",
+         "extra": {"co2_mole_fraction": 0.3, "he_mole_fraction": 0.0, "droplet_d0_mm": 3.0}},
+        ("CO2 makes up 30% of the gas around the fire (a discharged extinguisher).",
+         "Heptane, the hydrocarbon fuel tested in FLEX.",
+         "3 mm droplet, close to the median of the FLEX tests."),
+        match_fuel=True, compare="co2",
     ),
 ]
 SCENARIOS_BY_ID = {s.scenario_id: s for s in SCENARIOS}

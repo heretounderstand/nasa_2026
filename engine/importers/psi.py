@@ -24,6 +24,8 @@ from engine.importers.sources import SOURCES
 from engine.schema import Experiment
 
 ISS_FLAGS = ["gravity_nominal_platform"]
+# Les signaux du détecteur ISS de SAME plafonnent entre 6,2 et 6,3 V.
+SAME_SIGNAL_CEILING_V = 6.2
 
 
 def _add(res: ImportResult, where: str, **kw) -> None:
@@ -143,6 +145,10 @@ def import_psi69() -> ImportResult:
         extra = {"co2_mole_fraction": co2, "he_mole_fraction": he}
         if d0 is not None:
             extra["droplet_d0_mm"] = d0
+        # Diamètre relatif à l'extinction : 1 = la flamme s'éteint tout de suite,
+        # 0 = la goutte brûle entièrement. Mesure faite après l'allumage (résultat).
+        d_ext = _f(r[col["Visible flame extinction diameter"]])
+        ratio = round(d_ext / d0, 4) if d_ext is not None and d0 else None
         _add(
             res, where,
             experiment_id=f"PSI-69-{r['FLEX Test #']}", source_id="PSI-69", dataset="PSI-69",
@@ -151,10 +157,13 @@ def import_psi69() -> ImportResult:
             pressure_kpa=p_mmhg * MMHG_KPA,
             diluent=diluent, fuel=str(r["Fuel"]).lower(), fuel_type="liquid_droplet",
             geometry="free_droplet", extra=extra,
-            outcome_type=outcome, outcome_value=end if outcome == "descriptive" else None,
+            outcome_type=outcome, outcome_value=end if outcome == "descriptive" else ratio,
+            outcome_unit=None if outcome == "descriptive" or ratio is None else "extinction_diameter_ratio",
             is_measured=True, quality_flags=list(ISS_FLAGS),
-            extinction_criterion="Reported test end: Extinction / Completion / Disruption",
-            notes=f"visible flame extinction diameter {r[col['Visible flame extinction diameter']]} mm",
+            extinction_criterion="Reported test end: Extinction / Completion / Disruption; "
+                                 "ratio = visible flame extinction diameter / initial droplet diameter",
+            notes=(f"CO2 {co2:.0%}, He {he:.0%} in the atmosphere; initial droplet diameter {d0} mm; "
+                   f"visible flame extinction diameter {r[col['Visible flame extinction diameter']]} mm; test end: {end}"),
         )
     return res
 
@@ -331,26 +340,30 @@ def import_saffire() -> ImportResult:
 # --------------------------------------------------------------------------- #
 
 def import_psi101() -> ImportResult:
-    """Feuille « Reduced data sheet » du classeur combiné SAME / SAME-R.
+    """Feuille « Reduced Data with ISS Det » du classeur combiné SAME / SAME-R.
 
-    Résultat (régression) : diamètre de masse moyenne des particules (µm), qui
-    conditionne la réponse des détecteurs (les détecteurs optiques voient mal
-    les très petites particules). Le DBP est un aérosol d'étalonnage : écarté.
-    Une valeur 0 signifie absence de mesure : écartée.
+    Résultat (régression) : signal de diffusion du détecteur de fumée de l'ISS
+    (volts), installé dans le conduit de mesure de l'expérience (rapport final,
+    p. 76). Le diamètre de masse moyenne des particules est gardé en note.
+    Le DBP est un aérosol d'étalonnage : écarté.
+
+    Le signal plafonne vers 6,2-6,3 V quel que soit le matériau : ces valeurs
+    sont signalées `at_signal_ceiling` (saturation probable, non confirmée par
+    la source). Aucun seuil d'alarme n'est donné pour ce signal.
     Entrées : matériau, vitesse d'entrée d'air, rapport de chauffe Rt/R0,
     durée de vieillissement de la fumée.
     """
     res = ImportResult("PSI-101", sources=[SOURCES["PSI-101"]])
     path = raw_path("PSI-101", "Combined SAMER Results 06 02 14.xlsx")
+    sheet = "Reduced Data with ISS Det"
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        df = pd.read_excel(path, sheet_name="Reduced data sheet", header=1)
+        df = pd.read_excel(path, sheet_name=sheet, header=1)
     df.columns = [re.sub(r"\s+", " ", str(c)).strip() for c in df.columns]
     df.index = df.index + 3  # en-tête en ligne 2 du classeur
     flight_col = df.columns[0]
-    target = "Diameter of Average mass (micro-m)"
     for row_no, r in df.iterrows():
-        where = f"{rel(path)}#Reduced data sheet:{row_no}"
+        where = f"{rel(path)}#{sheet}:{row_no}"
         mat = r["Sample Type"]
         if is_blank(mat):
             continue
@@ -358,15 +371,19 @@ def import_psi101() -> ImportResult:
         if mat == "DBP":
             res.skip(where, "DBP: calibration aerosol")
             continue
-        val = _f(r[target])
-        if val is None or val <= 0:
-            res.skip(where, "diameter missing or zero")
+        val = _f(r["ISS Detector Scatter (volts)"])
+        if val is None:
+            res.skip(where, "detector signal missing")
             continue
-        flight = str(r[flight_col]).strip()
+        flight = str(r[flight_col]).strip().removesuffix(".0")
         aging = _f(r["Net Aging Duration"])
         extra = {"heating_ratio_rt_r0": float(r["Rt/R0"])}
         if aging is not None:
             extra["aging_s"] = aging
+        flags = list(ISS_FLAGS)
+        if val >= SAME_SIGNAL_CEILING_V:
+            flags.append("at_signal_ceiling")
+        diam = _f(r["Diameter of Average mass (micro-m)"])
         _add(
             res, where,
             experiment_id=f"PSI-101-{flight}-{r['SAME #']}-{row_no}", source_id="PSI-101",
@@ -374,9 +391,10 @@ def import_psi101() -> ImportResult:
             platform="iss", gravity_g=0.0,
             flow_velocity_cm_s=float(r["Inlet Velocity (cm/sec)"]),
             fuel=mat.lower(), fuel_type="solid", geometry="heated_sample_smoke", extra=extra,
-            outcome_type="detector_signal", outcome_value=float(val), outcome_unit="um_mass_mean_diameter",
-            is_measured=True, quality_flags=list(ISS_FLAGS),
-            notes=f"{'SAME' if flight == '1' else 'SAME-R' if flight == '2' else flight} campaign; {r['Description']}",
+            outcome_type="detector_signal", outcome_value=round(float(val), 4), outcome_unit="V_iss_detector_scatter",
+            is_measured=True, quality_flags=flags,
+            notes=(f"{'SAME' if flight == '1' else 'SAME-R' if flight == '2' else flight} campaign; {r['Description']}"
+                   + (f"; particle diameter of average mass {diam:.3f} µm" if diam else "")),
         )
     return res
 
@@ -408,4 +426,39 @@ def import_bass() -> ImportResult:
     return res
 
 
-ALL = [import_psi159, import_psi10, import_psi69, import_psi39, import_saffire, import_psi101, import_bass]
+def import_bass_observations() -> ImportResult:
+    """Matrice « as run » de BASS (PSI-26) : comptes rendus d'essai en texte
+    libre, repris mot pour mot dans `notes`, avec l'O2 et la pression de
+    l'ISS ce jour-là. Aucune classification : lignes descriptives."""
+    res = ImportResult("BASS-observations", sources=[SOURCES["PSI-26"]])
+    path = raw_path("PSI-26", "BASS test matrix.xlsx")
+    sheet = "as run matrix"
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        df = pd.read_excel(path, sheet_name=sheet, header=2)
+    df.columns = [re.sub(r"\s+", " ", str(c)).strip() for c in df.columns]
+    df.index = df.index + 4  # en-tête en ligne 3 du classeur
+    obs_col = [c for c in df.columns if c.startswith("Test Observations")][0]
+    for row_no, r in df.iterrows():
+        where = f"{rel(path)}#{sheet}:{row_no}"
+        text = r[obs_col]
+        if is_blank(text) or is_blank(r["material"]):
+            continue
+        o2, p_atm = _f(r["O2 % by volume"]), _f(r["pressure, atm"])
+        flags = list(ISS_FLAGS)
+        if o2 is not None and o2 > 1:  # colonne intitulée « % » mais saisie en fraction
+            o2, flags = o2 / 100, flags + ["o2_given_in_percent"]
+        _add(
+            res, where,
+            experiment_id=f"PSI-26-asrun-{row_no}", source_id="PSI-26", dataset="BASS-observations",
+            provenance_file=f"{rel(path)}#{sheet}", provenance_row=int(row_no),
+            platform="iss", gravity_g=0.0, o2_mole_fraction=o2,
+            pressure_kpa=p_atm * ATM_KPA if p_atm else None,
+            fuel=str(r["material"]).strip(), fuel_type="solid",
+            outcome_type="descriptive", is_measured=True, quality_flags=flags + ["free_text_observation"],
+            notes=re.sub(r"\s+", " ", str(text)).strip(),
+        )
+    return res
+
+
+ALL = [import_bass_observations, import_psi159, import_psi10, import_psi69, import_psi39, import_saffire, import_psi101, import_bass]

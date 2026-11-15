@@ -81,7 +81,9 @@ def run() -> dict:
                 d = d[d["fuel"].str.lower() == scenario.params.fuel.lower()].reset_index(drop=True)
             x = _x_dict(effective_conditions(ctx, scenario.params))
             model, fit = fit_and_predict(d, q.task, q.model_features, x)
-            ans = assess(scenario, ctx, d, q.task, model)
+            ans = assess(scenario, ctx, d, q.task, model, extra_features=q.model_features)
+            if sdef.compare:
+                ans.observations["comparison"] = _comparison(sdef, sets[sdef.question_type])
             if model is None:
                 ans.gaps.append(f"No model: {fit.reason_no_model}.")
             fit_reports[f"{sdef.scenario_id}/{ctx.context_id}"] = fit.__dict__
@@ -125,6 +127,7 @@ def run() -> dict:
         "sources": [s.model_dump(mode="json") for s in SOURCES.values()],
         "evidence_details": _evidence_details(df, answers),
         "limit_band": _limit_band(df),
+        "field_notes": _field_notes(df),
     }
     text = json.dumps(dashboard, indent=1, ensure_ascii=False)
     (OUT / "dashboard.json").write_text(text, encoding="utf-8")
@@ -132,6 +135,57 @@ def run() -> dict:
     NEXT_DATA.mkdir(parents=True, exist_ok=True)
     (NEXT_DATA / "dashboard.json").write_text(text, encoding="utf-8")
     return dashboard
+
+
+def _comparison(sdef, d: pd.DataFrame) -> dict:
+    """Médiane de la cible par groupe, sur tout le jeu de la question (données
+    observées). Situe le cas du scénario : par matériau, ou par dose de CO2."""
+    if sdef.compare == "fuel":
+        groups = d.groupby(d["fuel"].str.lower())
+        kind = "material"
+    else:
+        same = d[d["fuel"].str.lower() == sdef.params["fuel"].lower()]
+        co2 = same["extra.co2_mole_fraction"].astype(float)
+        label = pd.cut(co2, [-0.01, 0.0, 0.299, 1.0], labels=["no CO2", "CO2 below 30%", "CO2 30% or more"])
+        groups = same.groupby(label, observed=True)
+        kind = "CO2 level"
+    rows = []
+    for name, g in groups:
+        row = {"group": str(name), "n": int(len(g)), "median": round(float(g["target"].median()), 3)}
+        if sdef.compare == "fuel":
+            row["n_at_ceiling"] = int(g["quality_flags"].map(lambda f: "at_signal_ceiling" in f).sum())
+        rows.append(row)
+    if sdef.compare == "fuel":
+        rows.sort(key=lambda r: r["median"])
+    return {"by": kind, "groups": rows}
+
+
+# Observations d'astronautes (BASS, PSI-26), reprises mot pour mot. Sélection
+# par règle simple et affichée : matériau ou mot-clé, dans l'ordre du fichier.
+FIELD_NOTE_RULES = {
+    "s2": ("fabric samples (SIBAL, Nomex)",
+           lambda r: isinstance(r["fuel"], str) and any(k in r["fuel"].lower() for k in ("sibal", "nomex"))),
+    "s7": ("notes mentioning nitrogen (N2) used to put the flame out",
+           lambda r: isinstance(r["notes"], str) and "N2" in r["notes"]),
+}
+
+
+def _field_notes(df: pd.DataFrame) -> dict:
+    notes = df[df["dataset"] == "BASS-observations"]
+    out = {}
+    for sid, (rule, keep) in FIELD_NOTE_RULES.items():
+        sel = notes[notes.apply(keep, axis=1)]
+        out[sid] = {
+            "rule": rule, "total": int(len(sel)), "source_id": "PSI-26",
+            "items": [
+                {"experiment_id": r["experiment_id"], "material": r["fuel"],
+                 "o2_mole_fraction": None if pd.isna(r["o2_mole_fraction"]) else float(r["o2_mole_fraction"]),
+                 "pressure_kpa": None if pd.isna(r["pressure_kpa"]) else round(float(r["pressure_kpa"]), 1),
+                 "text": r["notes"], "provenance": f"{r['provenance_file']}, row {int(r['provenance_row'])}"}
+                for _, r in sel.head(6).iterrows()
+            ],
+        }
+    return out
 
 
 def _limit_band(df: pd.DataFrame) -> dict:

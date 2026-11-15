@@ -91,11 +91,9 @@ export function Explanation({ sid, cid, facts }: { sid: string; cid: string; fac
   const useAi = Boolean(ai?.text);
   return (
     <div className="stack" style={{ gap: 12 }}>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.p key={useAi ? "ai" : "rules"} className="answer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          {useAi ? ai!.text : facts.join(" ")}
-        </motion.p>
-      </AnimatePresence>
+      <p key={useAi ? "ai" : "rules"} className="answer pop">
+        {useAi ? ai!.text : facts.join(" ")}
+      </p>
       <div className="row" style={{ gap: 16, alignItems: "center" }}>
         <span className={`via ${useAi ? "ai" : ""}`}>
           <i />

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Lumens from "@/components/Lumens";
 import { ContextStrip, Explanation, Flame, type StripItem } from "@/components/ScenarioParts";
 import { answerFor, CONTEXT_ORDER, confidenceLevel, contextById, D, scenarioById, sourceById } from "@/lib/data";
-import { answerFacts, confidenceFacts } from "@/lib/explain";
+import { answerFacts, confidenceFacts, fmtVal } from "@/lib/explain";
 import { CONF_WORD, GRAV_STATUS, num, pad2, pct, PLATFORM_WORD, RISK_WORD } from "@/lib/labels";
 
 export function generateStaticParams() {
@@ -134,6 +134,7 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
                   </div>
                 </div>
               )}
+              {a.observations.comparison && <Comparison a={a} qt={sc.question_type} highlight={sc.scenario_id === "s5" ? "kapton" : "CO2 30% or more"} />}
               <Decomposition a={a} />
             </>
           )}
@@ -175,7 +176,61 @@ async function ScenarioContent({ params }: Pick<PageProps<"/scenario/[sid]/[cid]
           </section>
         </div>
       )}
+      {a && D.field_notes[sid] && <FieldNotesBlock sid={sid} />}
     </>
+  );
+}
+
+function Comparison({ a, qt, highlight }: { a: NonNullable<ReturnType<typeof answerFor>>; qt: string; highlight: string }) {
+  const cmp = a.observations.comparison!;
+  const max = Math.max(...cmp.groups.map((g) => g.median));
+  return (
+    <div aria-label={`Median by ${cmp.by}`}>
+      <div className="eyebrow" style={{ paddingBottom: 10 }}>
+        Across the whole dataset · median by {cmp.by}
+      </div>
+      {cmp.groups.map((g) => (
+        <div className="cmp" key={g.group}>
+          <span className={g.group === highlight ? "cmp-name on" : "cmp-name"}>{g.group}</span>
+          <span className="cmp-track">
+            <i className={g.group === highlight ? "on" : undefined} style={{ width: `${Math.max(2, (g.median / max) * 100)}%` }} />
+          </span>
+          <span className="val">
+            {fmtVal(qt, g.median)} · {g.n} tests
+            {g.n_at_ceiling ? ` · ${g.n_at_ceiling} at ceiling` : ""}
+          </span>
+        </div>
+      ))}
+      <p className="small muted" style={{ margin: "10px 0 0" }}>
+        Observed values, not a prediction. The highlighted row is this scenario’s case.
+      </p>
+    </div>
+  );
+}
+
+function FieldNotesBlock({ sid }: { sid: string }) {
+  const fn = D.field_notes[sid];
+  return (
+    <section aria-label="Astronaut observations" className="stack" style={{ gap: 4 }}>
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingBottom: 12 }}>
+        <h2 className="section">From the test log</h2>
+        <span className="small muted">
+          Verbatim observations from the BASS experiment on the ISS ({sourceById(fn.source_id)?.title}). Selection rule: {fn.rule}.
+          Showing {fn.items.length} of {fn.total}, in file order. Not classified, not used in the confidence score.
+        </span>
+      </div>
+      {fn.items.map((n) => (
+        <figure className="note" key={n.experiment_id}>
+          <blockquote>{n.text}</blockquote>
+          <figcaption className="m">
+            {[n.material, "ISS", n.o2_mole_fraction != null ? `O₂ ${pct(n.o2_mole_fraction)}` : null, n.pressure_kpa != null ? `${num(n.pressure_kpa, 1)} kPa` : null]
+              .filter(Boolean)
+              .join(" · ")}{" "}
+            · {n.provenance}
+          </figcaption>
+        </figure>
+      ))}
+    </section>
   );
 }
 

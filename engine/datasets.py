@@ -35,10 +35,15 @@ QUESTIONS: dict[str, Question] = {q.question_type: q for q in [
              "Does an invisible cool flame persist after extinction?",
              "cool flame / no cool flame",
              ("o2_mole_fraction", "pressure_kpa", "extra.he_mole_fraction", "extra.droplet_d0_mm")),
-    Question("smoke_particle_size", "regression",
-             "How large are the smoke particles (diameter of average mass)?",
-             "diameter of average mass (µm)",
+    Question("smoke_detector_signal", "regression",
+             "How strong is the ISS smoke detector's signal for this smoke?",
+             "ISS smoke detector scatter signal (V)",
              ("flow_velocity_cm_s", "extra.heating_ratio_rt_r0", "extra.aging_s")),
+    Question("suppressant_extinction", "regression",
+             "How early does a burning fuel droplet go out when CO2 is added?",
+             "extinction diameter / initial diameter (1 = goes out at once, 0 = burns completely)",
+             ("o2_mole_fraction", "pressure_kpa", "extra.co2_mole_fraction", "extra.he_mole_fraction",
+              "extra.droplet_d0_mm")),
     Question("wire_limiting_oxygen", "regression",
              "Below what O2 level does a flame stop spreading along a wire?",
              "limiting O2 for flame spread (mole fraction)",
@@ -134,7 +139,8 @@ def limit_shift(df: pd.DataFrame) -> pd.DataFrame:
 TARGET_FROM = {  # colonne qui porte la cible de chaque question
     "gas_flame_self_extinction": "outcome_type",
     "cool_flame_after_extinction": "outcome_value",
-    "smoke_particle_size": "outcome_value",
+    "smoke_detector_signal": "outcome_value",
+    "suppressant_extinction": "outcome_value",
     "wire_limiting_oxygen": "outcome_value",
     "solid_burns": "outcome_type",
     "limit_shift_vs_1g": "outcome_value",
@@ -146,7 +152,11 @@ def build(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     sets = {
         "gas_flame_self_extinction": df[df["dataset"] == "PSI-159-normal"].copy(),
         "cool_flame_after_extinction": df[df["dataset"] == "PSI-39"].copy(),
-        "smoke_particle_size": df[df["dataset"] == "PSI-101"].copy(),
+        "smoke_detector_signal": df[df["dataset"] == "PSI-101"].copy(),
+        # FLEX : essais éteints ou brûlés jusqu'au bout dont le diamètre d'extinction
+        # est connu. Les gouttes éclatées (Disruption) ne mesurent pas l'extinction.
+        "suppressant_extinction": df[(df["dataset"] == "PSI-69")
+                                     & (df["outcome_unit"] == "extinction_diameter_ratio")].copy(),
         "wire_limiting_oxygen": df[df["dataset"] == "wire_loc"].copy(),
         "solid_burns": solid_burn(df),
         "limit_shift_vs_1g": limit_shift(df),

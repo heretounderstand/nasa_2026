@@ -98,9 +98,10 @@ def test_no_post_ignition_feature_in_models():
 def test_pipeline_outputs(tmp_path, monkeypatch):
     from engine import pipeline
     monkeypatch.setattr(pipeline, "OUT", tmp_path)
+    monkeypatch.setattr(pipeline, "NEXT_DATA", tmp_path / "next")
     dash = pipeline.run()
     answers = json.loads((tmp_path / "answers.json").read_text(encoding="utf-8"))
-    assert len(answers) == 6 * 4  # la Terre est une référence, non calculée
+    assert len(answers) == 7 * 4  # la Terre est une référence, non calculée
     assert {a["context_id"] for a in answers} == {"iss", "gateway", "moon", "mars"}
     for a in answers:
         assert "%" not in a["confidence"]
@@ -112,3 +113,63 @@ def test_pipeline_outputs(tmp_path, monkeypatch):
             assert a["confidence"] in ("very_low", "low")
     assert "earth" not in {p["context_id"] for p in dash["priorities"]}
     pd.read_csv(tmp_path / "experiments.csv")
+
+
+def test_smoke_scenario_uses_real_detector_signal(sets):
+    d = sets["smoke_detector_signal"]
+    assert (d["outcome_unit"] == "V_iss_detector_scatter").all()
+    assert d["target"].between(0, 7).all()
+    # Les signaux au plafond de l'instrument sont signalés, pas masqués.
+    at_ceiling = d["quality_flags"].map(lambda f: "at_signal_ceiling" in f)
+    assert (d.loc[at_ceiling, "target"] >= 6.2).all() and (d.loc[~at_ceiling, "target"] < 6.2).all()
+    assert "dbp" not in set(d["fuel"])
+
+
+def test_flex_extinction_ratio(sets):
+    d = sets["suppressant_extinction"]
+    assert len(d) > 150
+    # Légèrement au-dessus de 1 possible : flamme éteinte aussitôt, bruit de mesure.
+    assert d["target"].between(0, 1.05).all()
+    assert set(d["outcome_type"]) <= {"extinction", "sustained"}  # gouttes éclatées exclues
+
+
+def test_bass_observations_are_verbatim_and_clean(frame):
+    df, _ = frame
+    obs = df[df["dataset"] == "BASS-observations"]
+    assert len(obs) > 100
+    assert (obs["outcome_type"] == "descriptive").all()
+    assert obs["provenance_row"].notna().all()
+    # Le classeur « planned » de PSI-26 contient des identifiants : rien ne doit en sortir.
+    assert not obs["notes"].str.contains(r"passw|login|Nasaspi|Monday1", case=False, regex=True).any()
+    assert not df["provenance_file"].str.contains("050213").any()
+
+
+def test_question_specific_features_drive_neighbours(sets):
+    """La dose de CO2 du scénario doit compter dans le choix des voisines."""
+    from engine import confidence as c
+    from engine.schema import Conditions
+    d = sets["suppressant_extinction"]
+    base = dict(gravity_g=0.0, o2_mole_fraction=0.21, pressure_kpa=101.0)
+    feats = ("extra.co2_mole_fraction",)
+    hi = c.coverage(Conditions(**base, extra={"co2_mole_fraction": 0.4}), d, extra_features=feats)
+    lo = c.coverage(Conditions(**base, extra={"co2_mole_fraction": 0.0}), d, extra_features=feats)
+    assert "extra.co2_mole_fraction" in hi.features
+    co2 = d["extra.co2_mole_fraction"].astype(float)
+    assert co2.loc[hi.neighbor_index].mean() > co2.loc[lo.neighbor_index].mean() + 0.2
+
+
+def test_comparisons_and_field_notes(tmp_path, monkeypatch):
+    from engine import pipeline
+    monkeypatch.setattr(pipeline, "OUT", tmp_path)
+    monkeypatch.setattr(pipeline, "NEXT_DATA", tmp_path / "next")
+    dash = pipeline.run()
+    by = {(a["scenario_id"], a["context_id"]): a for a in dash["answers"]}
+    smoke = {g["group"]: g for g in by[("s5", "iss")]["observations"]["comparison"]["groups"]}
+    assert smoke["kapton"]["median"] < smoke["silicone"]["median"]
+    co2 = {g["group"]: g for g in by[("s7", "iss")]["observations"]["comparison"]["groups"]}
+    assert co2["CO2 30% or more"]["median"] > co2["no CO2"]["median"]
+    for sid in ("s2", "s7"):
+        fn = dash["field_notes"][sid]
+        assert 0 < len(fn["items"]) <= 6 <= fn["total"] or fn["total"] == len(fn["items"])
+        assert all("row" in i["provenance"] for i in fn["items"])
+

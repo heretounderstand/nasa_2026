@@ -7,20 +7,31 @@
 import type { Answer, MissionContext, Scenario } from "./data";
 import { AGR_WORD, CEIL_WORD, CLASS_WORD, CONF_WORD, EVID_WORD, num, pct } from "./labels";
 
-function fmtVal(qt: string, v: number) {
+export function fmtVal(qt: string, v: number) {
   if (qt === "wire_limiting_oxygen") return pct(v);
-  return num(v, 3) + (qt === "smoke_particle_size" ? " µm" : "");
+  if (qt === "suppressant_extinction") return pct(v, 0);
+  if (qt === "smoke_detector_signal") return `${num(v, 2)} V`;
+  return num(v, 3);
 }
+
+// What the number measures, for each regression question.
+const MEASURE: Record<string, { model: (p: string) => string; range: string }> = {
+  wire_limiting_oxygen: { model: (p) => `flame spread stops below ${p} oxygen`, range: "an oxygen limit for flame spread of" },
+  smoke_detector_signal: { model: (p) => `ISS smoke detector signal of ${p}`, range: "an ISS smoke detector signal of" },
+  suppressant_extinction: {
+    model: (p) => `the flame goes out with the droplet still at ${p} of its initial diameter`,
+    range: "a flame that goes out with the droplet still at",
+  },
+};
 
 export function answerFacts(sc: Scenario, a: Answer, ctx: MissionContext): string[] {
   const qt = sc.question_type;
   const o = a.observations;
+  const m = MEASURE[qt];
   const out: string[] = [];
   if (a.prediction != null) {
     const p = typeof a.prediction === "string" ? CLASS_WORD[a.prediction] ?? a.prediction : fmtVal(qt, a.prediction);
-    const what =
-      qt === "wire_limiting_oxygen" ? `flame spread stops below ${p} oxygen` : qt === "smoke_particle_size" ? `particle size ${p}` : p;
-    out.push(`Model (${a.model.name}): ${what}.`);
+    out.push(`Model (${a.model.name}): ${m && typeof a.prediction === "number" ? m.model(p) : p}.`);
   }
   if (o.counts) {
     const total = Object.values(o.counts).reduce((s, v) => s + v, 0);
@@ -29,8 +40,14 @@ export function answerFacts(sc: Scenario, a: Answer, ctx: MissionContext): strin
       .map(([k, v]) => `${v} “${CLASS_WORD[k] ?? k}”`);
     out.push(`Of the ${total} experiments closest to this case: ${parts.join(", ")}.`);
   } else if (o.median != null && o.min != null && o.max != null) {
-    const what = qt === "wire_limiting_oxygen" ? "an oxygen limit for flame spread of" : qt === "smoke_particle_size" ? "particle sizes of" : "";
-    out.push(`The closest experiments give ${what} ${fmtVal(qt, o.min)} to ${fmtVal(qt, o.max)} (median ${fmtVal(qt, o.median)}).`.replace("  ", " "));
+    const tail = qt === "suppressant_extinction" ? " of its initial diameter" : "";
+    out.push(
+      `The closest experiments give ${m?.range ?? "values of"} ${fmtVal(qt, o.min)} to ${fmtVal(qt, o.max)}${tail} (median ${fmtVal(qt, o.median)}).`,
+    );
+  }
+  if (o.comparison) {
+    const parts = o.comparison.groups.map((g) => `${g.group} ${fmtVal(qt, g.median)} (${g.n} tests)`);
+    out.push(`Median by ${o.comparison.by} across the dataset: ${parts.join(", ")}.`);
   }
   if (qt === "wire_limiting_oxygen" && ctx.conditions.o2_mole_fraction != null && o.max != null) {
     const above = ctx.conditions.o2_mole_fraction > o.max;
@@ -46,10 +63,13 @@ export function answerFacts(sc: Scenario, a: Answer, ctx: MissionContext): strin
       `Shift in the oxygen limit relative to the 1 g test: from ${num(d[0])} to ${num(d[d.length - 1])} point(s) (negative: burns with less oxygen than at 1 g).`,
     );
   }
-  if (qt === "smoke_particle_size" && o.median != null) {
+  if (qt === "smoke_detector_signal") {
     out.push(
-      "Particles a few tenths of a micrometre across are poorly seen by optical detectors tuned for smoke on Earth; no alarm activation is recorded in these data.",
+      "Readings near the top of the recorded range are probably at the instrument's ceiling. The dataset gives no alarm threshold: this is signal strength, not whether an alarm would sound.",
     );
+  }
+  if (qt === "suppressant_extinction") {
+    out.push("A higher share means the flame goes out sooner, with more of the fuel left unburned.");
   }
   if (!o.n) out.push("No usable experiment for this case.");
   return out;

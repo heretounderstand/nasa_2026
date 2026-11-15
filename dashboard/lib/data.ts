@@ -3,7 +3,7 @@
 import raw from "@/data/dashboard.json";
 
 export type ContextId = "earth" | "iss" | "gateway" | "moon" | "mars";
-export type ScenarioId = "s1" | "s2" | "s3" | "s4" | "s5" | "s6";
+export type ScenarioId = "s1" | "s2" | "s3" | "s4" | "s5" | "s6" | "s7";
 export type Confidence = "very_low" | "low" | "medium" | "high";
 
 export interface Conditions {
@@ -55,6 +55,7 @@ export interface Answer {
     median?: number;
     max?: number;
     delta_o2_pts?: number[];
+    comparison?: { by: string; groups: { group: string; n: number; median: number; n_at_ceiling?: number }[] };
   };
   gaps: string[];
   model: {
@@ -128,6 +129,12 @@ export interface LimitBand {
   flags: string[];
   levels: { gravity_g: number; low: number; high: number }[];
 }
+export interface FieldNotes {
+  rule: string;
+  total: number;
+  source_id: string;
+  items: { experiment_id: string; material: string; o2_mole_fraction: number | null; pressure_kpa: number | null; text: string; provenance: string }[];
+}
 export interface Dashboard {
   disclaimer: string;
   contexts: MissionContext[];
@@ -139,6 +146,7 @@ export interface Dashboard {
   sources: Source[];
   evidence_details: Record<string, EvidenceDetail>;
   limit_band: LimitBand;
+  field_notes: Record<string, FieldNotes>;
 }
 
 export const D = raw as unknown as Dashboard;
